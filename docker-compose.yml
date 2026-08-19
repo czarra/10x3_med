@@ -1,0 +1,54 @@
+services:
+  database-test:
+    container_name: psql_test_med
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${DOCKER_POSTGRES_USER_TEST}
+      POSTGRES_PASSWORD: ${DOCKER_POSTGRES_PASSWORD_TEST}
+      POSTGRES_DB: ${DOCKER_POSTGRES_DB_TEST}
+      PGDATA: /var/lib/postgresql/med
+    ports:
+      - '4307:5432'
+    volumes:
+      - ./postgres_test_data:/var/lib/postgresql/med
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DOCKER_POSTGRES_USER_TEST} -d ${DOCKER_POSTGRES_DB_TEST}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  database:
+    container_name: psql_med
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${DOCKER_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DOCKER_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DOCKER_POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/med
+    ports:
+      - '4306:5432'
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/med
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DOCKER_POSTGRES_USER} -d ${DOCKER_POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  php:
+    container_name: php8_med
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    ports:
+      - '8381:80'
+    volumes:
+      - .:/var/www/med
+    depends_on:
+      database:
+        condition: service_healthy
+      database-test:
+        condition: service_healthy
