@@ -1,7 +1,7 @@
 ---
 change_id: auth-scaffold
 title: Security bundle, User entity, and password hashing scaffold
-status: implementing
+status: implemented
 created: 2026-08-24
 updated: 2026-08-25
 archived_at: null
