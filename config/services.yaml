@@ -21,3 +21,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+when@test:
+    services:
+        # Not consumed by any authenticator yet (no login flow exists), so the
+        # compiler prunes it as unreachable unless kept reachable via a public alias.
+        Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
+            alias: security.user_password_hasher
+            public: true

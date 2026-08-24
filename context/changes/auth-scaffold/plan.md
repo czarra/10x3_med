@@ -219,10 +219,10 @@ Fresh table, no existing data to migrate. Apply the migration to both `database`
 
 #### Automated
 
-- [ ] 2.1 New test passes: `vendor/bin/phpunit tests/Entity/UserTest.php`
-- [ ] 2.2 Full suite passes with no regressions/deprecations
-- [ ] 2.3 Full quality gate green (phpstan + cs-fixer dry-run + phpunit)
+- [x] 2.1 New test passes: `vendor/bin/phpunit tests/Entity/UserTest.php`
+- [x] 2.2 Full suite passes with no regressions/deprecations
+- [x] 2.3 Full quality gate green (phpstan + cs-fixer dry-run + phpunit)
 
 #### Manual
 
-- [ ] 2.4 Test output reviewed for silently-introduced deprecation warnings
+- [x] 2.4 Test output reviewed for silently-introduced deprecation warnings
