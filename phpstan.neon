@@ -2,3 +2,8 @@ parameters:
     level: 5
     paths:
         - src
+    ignoreErrors:
+        -
+            identifier: doctrine.columnType
+            message: '#type mapping mismatch: property can contain string\|null but database expects string#'
+            reportUnmatched: true
