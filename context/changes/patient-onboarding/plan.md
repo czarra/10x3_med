@@ -320,8 +320,8 @@ Fresh table (`patient_profiles`), no existing data. Apply to both `database` (de
 
 #### Manual
 
-- [x] 2.4 Profile-less user bounces to `/onboarding` from every URL
-- [x] 2.5 `0`/`0` defaults render as visibly editable, not blank/disabled
+- [x] 2.4 Profile-less user bounces to `/onboarding` from every URL — 3f41f35
+- [x] 2.5 `0`/`0` defaults render as visibly editable, not blank/disabled — 3f41f35
 
 ### Phase 3: Login and logout
 
@@ -339,13 +339,13 @@ Fresh table (`patient_profiles`), no existing data. Apply to both `database` (de
 
 #### Automated
 
-- [x] 4.1 Static analysis passes: `vendor/bin/phpstan analyse`
-- [x] 4.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
-- [x] 4.3 Functional tests pass: `RegistrationControllerTest.php`
-- [x] 4.4 Full suite passes with no regressions/deprecations
-- [x] 4.5 Full quality gate green (phpstan + cs-fixer dry-run + phpunit)
+- [x] 4.1 Static analysis passes: `vendor/bin/phpstan analyse` — 3f41f35
+- [x] 4.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff` — 3f41f35
+- [x] 4.3 Functional tests pass: `RegistrationControllerTest.php` — 3f41f35
+- [x] 4.4 Full suite passes with no regressions/deprecations — 3f41f35
+- [x] 4.5 Full quality gate green (phpstan + cs-fixer dry-run + phpunit) — 3f41f35
 
 #### Manual
 
-- [x] 4.6 Full register → onboard → profil → logout → login → profil → edit walk-through
-- [x] 4.7 Test output reviewed for silently-introduced deprecation warnings
+- [x] 4.6 Full register → onboard → profil → logout → login → profil → edit walk-through — 3f41f35
+- [x] 4.7 Test output reviewed for silently-introduced deprecation warnings — 3f41f35
