@@ -11,9 +11,6 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home', methods: ['GET'])]
     public function index(): Response
     {
-        return $this->render('home/index.html.twig', [
-            'title' => 'Witaj w Symfony',
-            'app_version' => \Symfony\Component\HttpKernel\Kernel::VERSION,
-        ]);
+        return $this->redirectToRoute('patient_profile');
     }
 }
