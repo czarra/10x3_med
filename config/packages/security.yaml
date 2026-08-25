@@ -23,6 +23,7 @@ security:
                 default_target_path: patient_profile
             logout:
                 path: app_logout
+                enable_csrf: true
 
     access_control:
         - { path: ^/(onboarding|profil)$, roles: ROLE_USER }

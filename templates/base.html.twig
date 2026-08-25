@@ -20,7 +20,10 @@
     <body>
         {% if app.user %}
             <nav>
-                <a href="{{ path('app_logout') }}">Wyloguj się</a>
+                <form method="post" action="{{ path('app_logout') }}">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit">Wyloguj się</button>
+                </form>
             </nav>
         {% endif %}
         {% block body %}{% endblock %}

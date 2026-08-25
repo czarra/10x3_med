@@ -35,7 +35,7 @@ class OnboardingControllerTest extends WebTestCase
             $client->loginUser($user);
             $crawler = $client->request('GET', '/onboarding');
 
-            $form = $crawler->filter('form')->form([
+            $form = $crawler->filter('body > form')->form([
                 'profile_form[baseDose]' => '0',
                 'profile_form[insulinWwRatio]' => '0',
             ]);
@@ -61,7 +61,7 @@ class OnboardingControllerTest extends WebTestCase
             $client->loginUser($user);
             $crawler = $client->request('GET', '/onboarding');
 
-            $form = $crawler->filter('form')->form([
+            $form = $crawler->filter('body > form')->form([
                 'profile_form[baseDose]' => '12.5',
                 'profile_form[insulinWwRatio]' => '1.2',
             ]);

@@ -241,6 +241,14 @@ Let a new patient create an account with e-mail + password meeting the agreed po
 
 **Contract**: `extends 'base.html.twig'`, renders `{{ form(registrationForm) }}`.
 
+#### 4. Post-implementation additions (requested during Phase 4 manual verification)
+
+**Files**: `templates/base.html.twig`, `templates/security/login.html.twig`
+
+**Intent**: Not part of the original phase scope — added because manual testing surfaced that a logged-in patient had no way to log out from most pages, and the login page had no path to registration for a new patient.
+
+**Contract**: `base.html.twig` gains a global nav block (`{% if app.user %}` guarded) with a "Wyloguj się" link to `app_logout`, visible on every page since all templates extend it. `security/login.html.twig` gains a "Nie masz konta? Zarejestruj się" link to `app_register` below the login form.
+
 ### Success Criteria:
 
 #### Automated Verification:

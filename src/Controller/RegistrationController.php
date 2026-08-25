@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -29,7 +30,14 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $entityManager->persist($user);
-            $entityManager->flush();
+
+            try {
+                $entityManager->flush();
+            } catch (UniqueConstraintViolationException) {
+                // Lost a race with a concurrent registration for the same e-mail;
+                // the account already exists, so send them to log in instead of a 500.
+                return $this->redirectToRoute('app_login');
+            }
 
             $security->login($user, 'form_login', 'main');
 

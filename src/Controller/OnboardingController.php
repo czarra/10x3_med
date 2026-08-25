@@ -6,6 +6,7 @@ use App\Entity\PatientProfile;
 use App\Entity\User;
 use App\Form\ProfileFormType;
 use App\Repository\PatientProfileRepository;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,14 @@ class OnboardingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($profile);
-            $entityManager->flush();
+
+            try {
+                $entityManager->flush();
+            } catch (UniqueConstraintViolationException) {
+                // Lost a race with a concurrent submission (e.g. a double-click);
+                // a profile now exists, so send them there instead of a 500.
+                return $this->redirectToRoute('patient_profile');
+            }
 
             return $this->redirectToRoute('patient_profile');
         }
