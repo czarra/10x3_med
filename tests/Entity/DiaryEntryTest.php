@@ -22,6 +22,14 @@ class DiaryEntryTest extends KernelTestCase
         $abovBoundary = $this->buildEntry($user);
         $abovBoundary->setGlycemiaMgDl(21);
         $this->assertCount(0, $validator->validate($abovBoundary));
+
+        $tooHigh = $this->buildEntry($user);
+        $tooHigh->setGlycemiaMgDl(2001);
+        $this->assertGreaterThan(0, count($validator->validate($tooHigh)), 'Expected glycemiaMgDl=2001 to fail validation.');
+
+        $atUpperBoundary = $this->buildEntry($user);
+        $atUpperBoundary->setGlycemiaMgDl(2000);
+        $this->assertCount(0, $validator->validate($atUpperBoundary));
     }
 
     public function testFutureMeasuredAtFailsValidation(): void
@@ -161,7 +169,13 @@ class DiaryEntryTest extends KernelTestCase
     public function testConstructorDefaultsAreDeliberatelyInvalidUntilFormFillsThemIn(): void
     {
         $user = $this->buildUser();
-        $entry = new DiaryEntry($user, 0, new \DateTimeImmutable(), 1.2, 12.5);
+        $entry = new DiaryEntry(
+            user: $user,
+            glycemiaMgDl: 0,
+            measuredAt: new \DateTimeImmutable(),
+            insulinWwRatioSnapshot: 1.2,
+            baseDoseSnapshot: 12.5,
+        );
 
         $this->assertSame(0, $entry->getGlycemiaMgDl());
         $this->assertSame(1.2, $entry->getInsulinWwRatioSnapshot());
@@ -190,6 +204,12 @@ class DiaryEntryTest extends KernelTestCase
 
     private function buildEntry(User $user): DiaryEntry
     {
-        return new DiaryEntry($user, 0, new \DateTimeImmutable(), 1.2, 12.5);
+        return new DiaryEntry(
+            user: $user,
+            glycemiaMgDl: 0,
+            measuredAt: new \DateTimeImmutable(),
+            insulinWwRatioSnapshot: 1.2,
+            baseDoseSnapshot: 12.5,
+        );
     }
 }
