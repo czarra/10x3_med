@@ -223,7 +223,7 @@ Let a new patient create an account with e-mail + password meeting the agreed po
 
 **Intent**: Collect e-mail + password with the agreed policy. Generate via `bin/console make:registration-form`, declining the maker's email-verification and "agree to terms" prompts (neither is in scope), then adjust the password field's constraints to match the policy below.
 
-**Contract**: `email` field maps to `User::$email` (`NotBlank`, `Email`). `plainPassword` is a non-mapped field (never persisted directly), constraints: `NotBlank`, `Length(min: 8, max: PasswordHasherInterface::MAX_PASSWORD_LENGTH)`, `Regex(pattern: '/\d/', message: '...cyfrę...')`, `Regex(pattern: '/[^a-zA-Z0-9]/', message: '...znak specjalny...')`, `NotCompromisedPassword` (already network-disabled under `when@test`, per Key Discoveries — no extra test wiring needed).
+**Contract**: `email` field maps to `User::$email` (`NotBlank`, `Email`, declared as entity-level `#[Assert\...]` attributes per the codebase's entity-validation convention, alongside a generated `#[UniqueEntity(fields: ['email'])]` on `User` — this gives duplicate-e-mail rejection a proper field-level form error for free via the Validator component, satisfying the "no 500" requirement without extra controller code). `plainPassword` is a non-mapped field (never persisted directly), constraints: `NotBlank`, `Length(min: 8, max: PasswordHasherInterface::MAX_PASSWORD_LENGTH)`, `Regex(pattern: '/\d/', message: '...cyfrę...')`, `Regex(pattern: '/[^a-zA-Z0-9]/', message: '...znak specjalny...')`, `NotCompromisedPassword`. **[Updated during Phase 4 implementation]** `not_compromised_password: false` under `when@test` (Key Discoveries) disables the constraint's *behavior* but not its *instantiation*: `NotCompromisedPasswordValidator`'s constructor unconditionally throws `LogicException` if the `HttpClient` class doesn't exist, before it ever checks the `enabled` flag (`vendor/symfony/validator/Constraints/NotCompromisedPasswordValidator.php:43`) — `symfony/http-client` had to be added as a runtime dependency (`composer require symfony/http-client`) for the constraint to be usable at all, even fully network-disabled in tests.
 
 #### 2. Registration controller
 
@@ -320,32 +320,32 @@ Fresh table (`patient_profiles`), no existing data. Apply to both `database` (de
 
 #### Manual
 
-- [ ] 2.4 Profile-less user bounces to `/onboarding` from every URL
-- [ ] 2.5 `0`/`0` defaults render as visibly editable, not blank/disabled
+- [x] 2.4 Profile-less user bounces to `/onboarding` from every URL
+- [x] 2.5 `0`/`0` defaults render as visibly editable, not blank/disabled
 
 ### Phase 3: Login and logout
 
 #### Automated
 
-- [x] 3.1 Static analysis passes: `vendor/bin/phpstan analyse`
-- [x] 3.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
-- [x] 3.3 Functional tests pass: `SecurityControllerTest.php`
+- [x] 3.1 Static analysis passes: `vendor/bin/phpstan analyse` — 1b06b8b
+- [x] 3.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff` — 1b06b8b
+- [x] 3.3 Functional tests pass: `SecurityControllerTest.php` — 1b06b8b
 
 #### Manual
 
-- [x] 3.4 Directly-seeded user logs in/out via browser, lands correctly, `/profil` redirects to `/login` after logout
+- [x] 3.4 Directly-seeded user logs in/out via browser, lands correctly, `/profil` redirects to `/login` after logout — 1b06b8b
 
 ### Phase 4: Registration
 
 #### Automated
 
-- [ ] 4.1 Static analysis passes: `vendor/bin/phpstan analyse`
-- [ ] 4.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
-- [ ] 4.3 Functional tests pass: `RegistrationControllerTest.php`
-- [ ] 4.4 Full suite passes with no regressions/deprecations
-- [ ] 4.5 Full quality gate green (phpstan + cs-fixer dry-run + phpunit)
+- [x] 4.1 Static analysis passes: `vendor/bin/phpstan analyse`
+- [x] 4.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
+- [x] 4.3 Functional tests pass: `RegistrationControllerTest.php`
+- [x] 4.4 Full suite passes with no regressions/deprecations
+- [x] 4.5 Full quality gate green (phpstan + cs-fixer dry-run + phpunit)
 
 #### Manual
 
-- [ ] 4.6 Full register → onboard → profil → logout → login → profil → edit walk-through
-- [ ] 4.7 Test output reviewed for silently-introduced deprecation warnings
+- [x] 4.6 Full register → onboard → profil → logout → login → profil → edit walk-through
+- [x] 4.7 Test output reviewed for silently-introduced deprecation warnings
