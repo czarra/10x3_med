@@ -308,13 +308,13 @@ New table only; no existing data to migrate.
 
 #### Automated
 
-- [x] 2.1 Full test suite passes
-- [x] 2.2 Static analysis passes
-- [x] 2.3 Code style passes
+- [x] 2.1 Full test suite passes — 53c478c
+- [x] 2.2 Static analysis passes — 53c478c
+- [x] 2.3 Code style passes — 53c478c
 
 #### Manual
 
-- [x] 2.4 Valid minimal entry submission verified (flash, reset, snapshot values)
-- [x] 2.5 Valid full entry submission verified (all optional fields persist)
-- [x] 2.6 All validation edge cases verified in browser
-- [x] 2.7 Auth/onboarding gate behavior on the new route verified
+- [x] 2.4 Valid minimal entry submission verified (flash, reset, snapshot values) — 53c478c
+- [x] 2.5 Valid full entry submission verified (all optional fields persist) — 53c478c
+- [x] 2.6 All validation edge cases verified in browser — 53c478c
+- [x] 2.7 Auth/onboarding gate behavior on the new route verified — 53c478c
