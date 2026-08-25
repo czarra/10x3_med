@@ -314,25 +314,25 @@ Fresh table (`patient_profiles`), no existing data. Apply to both `database` (de
 
 #### Automated
 
-- [x] 1.1 Schema validates: `doctrine:schema:validate`
-- [x] 1.2 Migration applied (dev)
-- [x] 1.3 Migration applied (test)
-- [x] 1.4 Static analysis passes: `vendor/bin/phpstan analyse`
-- [x] 1.5 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
-- [x] 1.6 Kernel test passes: `vendor/bin/phpunit tests/Entity/PatientProfileTest.php`
+- [x] 1.1 Schema validates: `doctrine:schema:validate` — 6f1f80e
+- [x] 1.2 Migration applied (dev) — 6f1f80e
+- [x] 1.3 Migration applied (test) — 6f1f80e
+- [x] 1.4 Static analysis passes: `vendor/bin/phpstan analyse` — 6f1f80e
+- [x] 1.5 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff` — 6f1f80e
+- [x] 1.6 Kernel test passes: `vendor/bin/phpunit tests/Entity/PatientProfileTest.php` — 6f1f80e
 
 #### Manual
 
-- [ ] 1.7 `doctrine:mapping:info` lists `App\Entity\PatientProfile` with no errors
-- [ ] 1.8 Generated migration SQL reviewed by eye (table, FK, unique index)
+- [x] 1.7 `doctrine:mapping:info` lists `App\Entity\PatientProfile` with no errors — 6f1f80e
+- [x] 1.8 Generated migration SQL reviewed by eye (table, FK, unique index) — 6f1f80e
 
 ### Phase 2: Onboarding, profile edit, and the access gate
 
 #### Automated
 
-- [ ] 2.1 Static analysis passes: `vendor/bin/phpstan analyse`
-- [ ] 2.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
-- [ ] 2.3 Functional tests pass: `OnboardingControllerTest.php` + `ProfileControllerTest.php`
+- [x] 2.1 Static analysis passes: `vendor/bin/phpstan analyse`
+- [x] 2.2 Code style passes: `vendor/bin/php-cs-fixer fix --dry-run --diff`
+- [x] 2.3 Functional tests pass: `OnboardingControllerTest.php` + `ProfileControllerTest.php`
 
 #### Manual
 

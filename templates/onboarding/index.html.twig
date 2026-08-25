@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ustawienia początkowe{% endblock %}
+
+{% block body %}
+    <h1>Ustaw swoje parametry początkowe</h1>
+    <p>Zanim zaczniesz korzystać z aplikacji, podaj swoją dawkę bazową insuliny oraz przelicznik insulina/WW.</p>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Zapisz</button>
+    {{ form_end(form) }}
+{% endblock %}

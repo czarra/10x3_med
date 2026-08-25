@@ -17,4 +17,5 @@ security:
             lazy: true
             provider: app_user_provider
 
-    access_control: []
+    access_control:
+        - { path: ^/(onboarding|profil)$, roles: ROLE_USER }
