@@ -42,10 +42,10 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 
 | ID   | Change ID                       | Outcome (user can …)                                              | Prerequisites | PRD refs                | Status   |
 | ---- | -------------------------------- | ------------------------------------------------------------------ | -------------- | ------------------------ | -------- |
-| F-01 | auth-scaffold                    | (foundation) szkielet autoryzacji — bundle security, encja User    | —              | FR-001, FR-002           | in-progress |
+| F-01 | auth-scaffold                    | (foundation) szkielet autoryzacji — bundle security, encja User    | —              | FR-001, FR-002           | done |
 | F-02 | deploy-pipeline-live              | (foundation) działający pipeline wdrożeniowy (Railway + CI)         | —              | frontmatter: hard_deadline | ready  |
-| S-01 | patient-onboarding                | Pacjent zakłada konto, loguje się i ustawia parametry początkowe    | F-01            | FR-001, FR-002, FR-003   | proposed |
-| S-02 | log-diary-entry                   | Pacjent dodaje wpis do dzienniczka (glikemia + opcjonalne pola)     | S-01            | FR-004, FR-005, FR-006, FR-007 | proposed |
+| S-01 | patient-onboarding                | Pacjent zakłada konto, loguje się i ustawia parametry początkowe    | F-01            | FR-001, FR-002, FR-003   | done |
+| S-02 | log-diary-entry                   | Pacjent dodaje wpis do dzienniczka (glikemia + opcjonalne pola)     | S-01            | FR-004, FR-005, FR-006, FR-007 | done |
 | S-03 | insulin-ww-ratio-suggestion       | Pacjent dostaje sugestię skorygowanego przelicznika insulina/WW     | S-02            | FR-009, FR-011, US-01    | proposed |
 | S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | proposed |
 | S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | proposed |
@@ -106,7 +106,7 @@ odtwarzają.
 - **Risk:** Absolutnie każdy dalszy element zależy od zalogowanego pacjenta —
   musi wylądować jako pierwszy, mimo presji czasu, bo nic innego nie da się
   zademonstrować bez tego.
-- **Status:** in-progress
+- **Status:** done
 
 ### F-02: Działający pipeline wdrożeniowy
 
@@ -149,7 +149,7 @@ odtwarzają.
 - **Risk:** Pierwszy widoczny dla użytkownika element; musi wylądować przed
   czymkolwiek innym, bo każdy kolejny slice potrzebuje zalogowanego pacjenta z
   ustawionymi parametrami początkowymi.
-- **Status:** proposed
+- **Status:** done
 
 ### S-02: Dodanie wpisu do dzienniczka
 
@@ -165,7 +165,7 @@ odtwarzają.
 - **Risk:** Kluczowy pionowy element wprowadzania danych — każda rekomendacja,
   widok historii i eksport zależy od istnienia wpisów, więc musi nastąpić
   bezpośrednio po S-01.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Sugestia skorygowanego przelicznika insulina/WW
 
@@ -290,3 +290,7 @@ sekwencjonowania.
 (Puste przy pierwszej generacji. `/10x-archive` doda tu wpis — i przełączy
 `Status` danego elementu na `done` — gdy zmiana o pasującym `Change ID` zostanie
 zarchiwizowana.)
+
+- **S-01: Pacjent może założyć konto (e-mail + hasło), zalogować się, i ustawić początkową dawkę bazową oraz przelicznik insulina/WW.** — Archived 2026-08-25 → `context/archive/2026-08-25-patient-onboarding/`. Lesson: —.
+- **S-02: Pacjent może dodać wpis: poziom glikemii + data/godzina (wymagane), opcjonalnie WW, opcjonalnie dawka insuliny, opcjonalnie intensywność i czas wysiłku fizycznego.** — Archived 2026-08-25 → `context/archive/2026-08-25-log-diary-entry/`. Lesson: —.
+- **F-01: (foundation) Skonfigurowany bundle Security, encja `User` + migracja, hashowanie haseł — bez interfejsu rejestracji/logowania.** — Archived 2026-08-25 → `context/archive/2026-08-24-auth-scaffold/`. Lesson: —.
