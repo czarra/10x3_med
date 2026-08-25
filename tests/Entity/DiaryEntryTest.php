@@ -62,6 +62,16 @@ class DiaryEntryTest extends KernelTestCase
         $valid->setGlycemiaMgDl(100);
         $valid->setWw(20.0);
         $this->assertCount(0, $validator->validate($valid));
+
+        $tooLow = $this->buildEntry($user);
+        $tooLow->setGlycemiaMgDl(100);
+        $tooLow->setWw(-0.1);
+        $this->assertGreaterThan(0, count($validator->validate($tooLow)));
+
+        $validAtZero = $this->buildEntry($user);
+        $validAtZero->setGlycemiaMgDl(100);
+        $validAtZero->setWw(0.0);
+        $this->assertCount(0, $validator->validate($validAtZero));
     }
 
     public function testInsulinDoseRangeBoundaries(): void
@@ -78,6 +88,16 @@ class DiaryEntryTest extends KernelTestCase
         $valid->setGlycemiaMgDl(100);
         $valid->setInsulinDose(50.0);
         $this->assertCount(0, $validator->validate($valid));
+
+        $tooLow = $this->buildEntry($user);
+        $tooLow->setGlycemiaMgDl(100);
+        $tooLow->setInsulinDose(-0.1);
+        $this->assertGreaterThan(0, count($validator->validate($tooLow)));
+
+        $validAtZero = $this->buildEntry($user);
+        $validAtZero->setGlycemiaMgDl(100);
+        $validAtZero->setInsulinDose(0.0);
+        $this->assertCount(0, $validator->validate($validAtZero));
     }
 
     public function testActivityDurationRangeBoundaries(): void
@@ -96,6 +116,18 @@ class DiaryEntryTest extends KernelTestCase
         $valid->setActivityIntensity(ActivityIntensity::Light);
         $valid->setActivityDurationMinutes(300);
         $this->assertCount(0, $validator->validate($valid));
+
+        $tooShort = $this->buildEntry($user);
+        $tooShort->setGlycemiaMgDl(100);
+        $tooShort->setActivityIntensity(ActivityIntensity::Light);
+        $tooShort->setActivityDurationMinutes(0);
+        $this->assertGreaterThan(0, count($validator->validate($tooShort)));
+
+        $validAtOne = $this->buildEntry($user);
+        $validAtOne->setGlycemiaMgDl(100);
+        $validAtOne->setActivityIntensity(ActivityIntensity::Light);
+        $validAtOne->setActivityDurationMinutes(1);
+        $this->assertCount(0, $validator->validate($validAtOne));
     }
 
     public function testActivityIntensityWithoutDurationFailsValidation(): void
@@ -129,7 +161,7 @@ class DiaryEntryTest extends KernelTestCase
     public function testConstructorDefaultsAreDeliberatelyInvalidUntilFormFillsThemIn(): void
     {
         $user = $this->buildUser();
-        $entry = new DiaryEntry($user, 1.2, 12.5);
+        $entry = new DiaryEntry($user, 0, new \DateTimeImmutable(), 1.2, 12.5);
 
         $this->assertSame(0, $entry->getGlycemiaMgDl());
         $this->assertSame(1.2, $entry->getInsulinWwRatioSnapshot());
@@ -158,6 +190,6 @@ class DiaryEntryTest extends KernelTestCase
 
     private function buildEntry(User $user): DiaryEntry
     {
-        return new DiaryEntry($user, 1.2, 12.5);
+        return new DiaryEntry($user, 0, new \DateTimeImmutable(), 1.2, 12.5);
     }
 }

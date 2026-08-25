@@ -27,7 +27,7 @@ class DiaryController extends AbstractController
             throw $this->createNotFoundException('Patient profile not found.');
         }
 
-        $entry = new DiaryEntry($user, $profile->getInsulinWwRatio(), $profile->getBaseDose());
+        $entry = new DiaryEntry($user, 0, new \DateTimeImmutable(), $profile->getInsulinWwRatio(), $profile->getBaseDose());
         $form = $this->createForm(DiaryEntryFormType::class, $entry);
         $form->handleRequest($request);
 

@@ -287,6 +287,28 @@ New table only; no existing data to migrate.
   `src/Form/ProfileFormType.php`, `src/Entity/PatientProfile.php`
 - Create-flow precedent: `src/Controller/RegistrationController.php`
 
+## Addenda
+
+- **Nav restructuring (Phase 2, `templates/base.html.twig`)**: the plan
+  specified adding a single "Dodaj wpis" link to the existing flat nav
+  block. The implementation went further and replaced the flat block with
+  a `<details class="dropdown">` hamburger menu, and added a
+  "Przejdź do profilu" link that wasn't in scope either — both to keep the
+  growing link list usable. Flagged in
+  `context/changes/log-diary-entry/reviews/impl-review.md` (F2) and
+  accepted as a documented deviation rather than reverted.
+- **`DiaryEntry` constructor signature (Phase 1, `src/Entity/DiaryEntry.php`)**:
+  the plan specified `__construct(User $user, float $insulinWwRatioSnapshot,
+  float $baseDoseSnapshot)`, defaulting `glycemiaMgDl` to `0` and
+  `measuredAt` to "now" internally. During impl-review triage (F3) this was
+  changed to `__construct(User $user, int $glycemiaMgDl, \DateTimeImmutable
+  $measuredAt, float $insulinWwRatioSnapshot, float $baseDoseSnapshot)`,
+  requiring the caller to pass the deliberate invalid placeholder
+  explicitly — matching the existing `PatientProfile`/`OnboardingController`
+  precedent (`new PatientProfile($user, 0, 0)`) — so a future non-form call
+  site can't silently construct an invalid entry without noticing.
+  `DiaryController::new()` updated accordingly.
+
 ## Progress
 
 > Convention: `- [ ]` pending, `- [x]` done. Append ` — <commit sha>` when a step lands. Do not rename step titles. See `references/progress-format.md`.

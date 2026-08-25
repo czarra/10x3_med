@@ -22,7 +22,7 @@ class DiaryEntry
     private User $user;
 
     #[ORM\Column]
-    #[Assert\GreaterThan(20)]
+    #[Assert\Range(min: 21, max: 2000)]
     private int $glycemiaMgDl;
 
     #[ORM\Column]
@@ -53,13 +53,13 @@ class DiaryEntry
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(User $user, float $insulinWwRatioSnapshot, float $baseDoseSnapshot)
+    public function __construct(User $user, int $glycemiaMgDl, \DateTimeImmutable $measuredAt, float $insulinWwRatioSnapshot, float $baseDoseSnapshot)
     {
         $this->user = $user;
+        $this->glycemiaMgDl = $glycemiaMgDl;
+        $this->measuredAt = $measuredAt;
         $this->insulinWwRatioSnapshot = $insulinWwRatioSnapshot;
         $this->baseDoseSnapshot = $baseDoseSnapshot;
-        $this->glycemiaMgDl = 0;
-        $this->measuredAt = new \DateTimeImmutable();
         $this->createdAt = new \DateTimeImmutable();
     }
 
