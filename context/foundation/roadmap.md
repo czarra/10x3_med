@@ -46,7 +46,7 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 | F-02 | deploy-pipeline-live              | (foundation) działający pipeline wdrożeniowy (Railway + CI)         | —              | frontmatter: hard_deadline | ready  |
 | S-01 | patient-onboarding                | Pacjent zakłada konto, loguje się i ustawia parametry początkowe    | F-01            | FR-001, FR-002, FR-003   | done |
 | S-02 | log-diary-entry                   | Pacjent dodaje wpis do dzienniczka (glikemia + opcjonalne pola)     | S-01            | FR-004, FR-005, FR-006, FR-007 | done |
-| S-03 | insulin-ww-ratio-suggestion       | Pacjent dostaje sugestię skorygowanego przelicznika insulina/WW     | S-02            | FR-009, FR-011, US-01    | proposed |
+| S-03 | insulin-ww-ratio-suggestion       | Pacjent dostaje sugestię skorygowanego przelicznika insulina/WW     | S-02            | FR-009, FR-011, US-01    | planning |
 | S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | proposed |
 | S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | proposed |
 | S-06 | edit-delete-diary-entry           | Pacjent edytuje/usuwa ostatni wpis (do 24h od utworzenia)            | S-02            | FR-014                   | proposed |
@@ -182,7 +182,7 @@ odtwarzają.
 - **Risk:** To jest gwiazda przewodnia — walidacja kluczowej hipotezy produktu.
   Umieszczona tak wcześnie, jak pozwala S-02, bo main_goal (`speed`) wymaga jak
   najwcześniejszego sygnału walidacyjnego, a nie symetrycznej kolejności.
-- **Status:** proposed
+- **Status:** planning
 
 ### S-04: Ostrzeżenie o ryzyku hipoglikemii przy wysiłku
 
