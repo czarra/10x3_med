@@ -108,8 +108,14 @@ the image.
   — runs with real runtime env vars available, addressing gap #7 above and
   `infrastructure.md`'s own migration-ordering risk (pre-deploy hook, not container
   start command).
-- `deploy.healthcheckPath: "/api/status"` (reuses the existing
-  `src/Controller/Api/StatusController.php` endpoint — already checks DB connectivity).
+- `deploy.healthcheckPath: "/login"` (**[Updated 2026-08-25]** the original
+  `/api/status` endpoint this pointed at was removed as unused/dead code —
+  `src/Controller/Api/StatusController.php` no longer exists. `/login` is a
+  simple, always-public, unauthenticated route that proves the app process is
+  up and serving requests. DB connectivity is already gated separately by the
+  `preDeployCommand` migration step above, which runs against the DB before
+  traffic is routed and fails loudly if it's unreachable — so the health check
+  itself doesn't need to re-verify DB connectivity).
 - `deploy.numReplicas: 1` (explicit, since >1 replica has no sticky-session story yet
   per `infrastructure.md`'s risk register).
 
