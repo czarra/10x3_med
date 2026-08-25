@@ -24,6 +24,7 @@ security:
             logout:
                 path: app_logout
                 enable_csrf: true
+                target: app_login
 
     access_control:
         - { path: ^/(onboarding|profil)$, roles: ROLE_USER }

@@ -80,6 +80,8 @@ class SecurityControllerTest extends WebTestCase
             $form = $crawler->filter('nav form')->form();
             $client->submit($form);
 
+            $this->assertResponseRedirects('/login');
+
             $client->request('GET', '/profil');
 
             $this->assertResponseRedirects('/login');

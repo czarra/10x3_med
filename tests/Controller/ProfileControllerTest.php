@@ -23,7 +23,7 @@ class ProfileControllerTest extends WebTestCase
             $client->loginUser($user);
             $crawler = $client->request('GET', '/profil');
 
-            $form = $crawler->filter('body > form')->form();
+            $form = $crawler->filter('main > form')->form();
             $this->assertFalse($form->has('password'), 'Profile form must not require a password field.');
 
             $form->setValues([
