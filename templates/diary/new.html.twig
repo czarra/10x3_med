@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj wpis{% endblock %}
+
+{% block body %}
+    <h1>Dodaj wpis do dzienniczka</h1>
+
+    {% for message in app.flashes('success') %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit">Zapisz wpis</button>
+    {{ form_end(form) }}
+{% endblock %}

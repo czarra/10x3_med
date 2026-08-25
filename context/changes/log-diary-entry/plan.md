@@ -295,26 +295,26 @@ New table only; no existing data to migrate.
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly
-- [x] 1.2 Entity/enum unit tests pass
-- [x] 1.3 Static analysis passes
-- [x] 1.4 Code style passes
+- [x] 1.1 Migration applies cleanly — 7b0eec5
+- [x] 1.2 Entity/enum unit tests pass — 7b0eec5
+- [x] 1.3 Static analysis passes — 7b0eec5
+- [x] 1.4 Code style passes — 7b0eec5
 
 #### Manual
 
-- [x] 1.5 Generated migration SQL reviewed and confirmed correct
+- [x] 1.5 Generated migration SQL reviewed and confirmed correct — 7b0eec5
 
 ### Phase 2: Add-Entry Form, Controller, Template, Navigation
 
 #### Automated
 
-- [ ] 2.1 Full test suite passes
-- [ ] 2.2 Static analysis passes
-- [ ] 2.3 Code style passes
+- [x] 2.1 Full test suite passes
+- [x] 2.2 Static analysis passes
+- [x] 2.3 Code style passes
 
 #### Manual
 
-- [ ] 2.4 Valid minimal entry submission verified (flash, reset, snapshot values)
-- [ ] 2.5 Valid full entry submission verified (all optional fields persist)
-- [ ] 2.6 All validation edge cases verified in browser
-- [ ] 2.7 Auth/onboarding gate behavior on the new route verified
+- [x] 2.4 Valid minimal entry submission verified (flash, reset, snapshot values)
+- [x] 2.5 Valid full entry submission verified (all optional fields persist)
+- [x] 2.6 All validation edge cases verified in browser
+- [x] 2.7 Auth/onboarding gate behavior on the new route verified
