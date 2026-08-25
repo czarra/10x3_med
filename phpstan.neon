@@ -6,4 +6,6 @@ parameters:
         -
             identifier: doctrine.columnType
             message: '#type mapping mismatch: property can contain string\|null but database expects string#'
+            paths:
+                - src/Entity/User.php
             reportUnmatched: true
