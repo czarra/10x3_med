@@ -369,20 +369,20 @@ Nie dotyczy — brak zmian schematu bazy danych.
 
 #### Automated
 
-- [x] 1.1 Nowe testy jednostkowe przechodzą: `phpunit --filter HypoglycemiaWarningServiceTest`
-- [x] 1.2 Statyczna analiza: `phpstan analyse`
-- [x] 1.3 Styl kodu: `php-cs-fixer fix --dry-run`
+- [x] 1.1 Nowe testy jednostkowe przechodzą: `phpunit --filter HypoglycemiaWarningServiceTest` — 2f291b5
+- [x] 1.2 Statyczna analiza: `phpstan analyse` — 2f291b5
+- [x] 1.3 Styl kodu: `php-cs-fixer fix --dry-run` — 2f291b5
 
 ### Phase 2: Wspólny partial disclaimeru
 
 #### Automated
 
-- [ ] 2.1 Istniejące testy `DashboardControllerTest` nadal przechodzą
-- [ ] 2.2 Styl kodu: `php-cs-fixer fix --dry-run`
+- [x] 2.1 Istniejące testy `DashboardControllerTest` nadal przechodzą
+- [x] 2.2 Styl kodu: `php-cs-fixer fix --dry-run`
 
 #### Manual
 
-- [ ] 2.3 `/pulpit` — oba disclaimery wyglądają identycznie jak przed zmianą
+- [x] 2.3 `/pulpit` — oba disclaimery wyglądają identycznie jak przed zmianą
 
 ### Phase 3: Spięcie z formularzem dodawania wpisu
 

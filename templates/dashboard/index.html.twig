@@ -21,7 +21,7 @@
         {% else %}
             <p>Brak wystarczających danych do zasugerowania zmiany przelicznika lub obecny przelicznik dobrze dopasowany.</p>
         {% endif %}
-        <p><small>Sugestia ma charakter algorytmiczny i nie zastępuje konsultacji lekarskiej. Każdą zmianę dawkowania skonsultuj z lekarzem prowadzącym.</small></p>
+        {% include '_disclaimer.html.twig' %}
     </article>
 
     <article>
@@ -36,6 +36,6 @@
         {% else %}
             <p>Brak wystarczających danych do zasugerowania zmiany dawki bazowej lub obecna dawka dobrze dopasowana.</p>
         {% endif %}
-        <p><small>Sugestia ma charakter algorytmiczny i nie zastępuje konsultacji lekarskiej. Każdą zmianę dawkowania skonsultuj z lekarzem prowadzącym.</small></p>
+        {% include '_disclaimer.html.twig' %}
     </article>
 {% endblock %}
