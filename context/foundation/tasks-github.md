@@ -19,9 +19,9 @@ odwrotnie. Nie jest generowane automatycznie — patrz "Odświeżanie" na końcu
 | F-02       | deploy-pipeline-live            | [#2](https://github.com/czarra/10x3_med/issues/2)         | foundation            | —                     | ready                | open              |
 | S-01       | patient-onboarding              | [#3](https://github.com/czarra/10x3_med/issues/3)         | slice                 | #1                    | done                 | closed            |
 | S-02       | log-diary-entry                  | [#4](https://github.com/czarra/10x3_med/issues/4)         | slice                 | #3                    | done                 | closed            |
-| S-03       | insulin-ww-ratio-suggestion      | [#5](https://github.com/czarra/10x3_med/issues/5)         | slice, north-star     | #4                    | proposed             | open              |
-| S-04       | activity-hypoglycemia-warning    | [#6](https://github.com/czarra/10x3_med/issues/6)         | slice                 | #4                    | proposed             | open              |
-| S-05       | diary-history-view               | [#7](https://github.com/czarra/10x3_med/issues/7)         | slice                 | #4                    | proposed             | open              |
+| S-03       | insulin-ww-ratio-suggestion      | [#5](https://github.com/czarra/10x3_med/issues/5)         | slice, north-star     | #4                    | done                 | closed            |
+| S-04       | activity-hypoglycemia-warning    | [#6](https://github.com/czarra/10x3_med/issues/6)         | slice                 | #4                    | done                 | closed            |
+| S-05       | diary-history-view               | [#7](https://github.com/czarra/10x3_med/issues/7)         | slice                 | #4                    | done                 | closed            |
 | S-06       | edit-delete-diary-entry          | [#8](https://github.com/czarra/10x3_med/issues/8)         | slice                 | #4                    | proposed             | open              |
 | S-07       | export-diary-history              | [#9](https://github.com/czarra/10x3_med/issues/9)         | slice                 | #7, #5                | proposed             | open              |
 
