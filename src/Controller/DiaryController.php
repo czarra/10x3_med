@@ -6,6 +6,7 @@ use App\Entity\DiaryEntry;
 use App\Entity\User;
 use App\Form\DiaryEntryFormType;
 use App\Repository\PatientProfileRepository;
+use App\Service\Warning\HypoglycemiaWarningService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ class DiaryController extends AbstractController
 {
     #[Route('/dziennik/nowy', name: 'diary_entry_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function new(Request $request, PatientProfileRepository $patientProfileRepository, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, PatientProfileRepository $patientProfileRepository, EntityManagerInterface $entityManager, HypoglycemiaWarningService $hypoglycemiaWarningService): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -41,6 +42,11 @@ class DiaryController extends AbstractController
             $entityManager->persist($entry);
             $entityManager->flush();
             $this->addFlash('success', 'Wpis został zapisany.');
+
+            $warning = $hypoglycemiaWarningService->evaluate($entry);
+            if ($warning->available) {
+                $this->addFlash('warning', $warning->message);
+            }
 
             return $this->redirectToRoute('diary_entry_new');
         }

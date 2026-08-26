@@ -377,25 +377,25 @@ Nie dotyczy — brak zmian schematu bazy danych.
 
 #### Automated
 
-- [x] 2.1 Istniejące testy `DashboardControllerTest` nadal przechodzą
-- [x] 2.2 Styl kodu: `php-cs-fixer fix --dry-run`
+- [x] 2.1 Istniejące testy `DashboardControllerTest` nadal przechodzą — 9372b1c
+- [x] 2.2 Styl kodu: `php-cs-fixer fix --dry-run` — 9372b1c
 
 #### Manual
 
-- [x] 2.3 `/pulpit` — oba disclaimery wyglądają identycznie jak przed zmianą
+- [x] 2.3 `/pulpit` — oba disclaimery wyglądają identycznie jak przed zmianą — 9372b1c
 
 ### Phase 3: Spięcie z formularzem dodawania wpisu
 
 #### Automated
 
-- [ ] 3.1 Istniejące testy `DiaryControllerTest` nadal przechodzą
-- [ ] 3.2 Statyczna analiza: `phpstan analyse`
-- [ ] 3.3 Styl kodu: `php-cs-fixer fix --dry-run`
+- [x] 3.1 Istniejące testy `DiaryControllerTest` nadal przechodzą
+- [x] 3.2 Statyczna analiza: `phpstan analyse`
+- [x] 3.3 Styl kodu: `php-cs-fixer fix --dry-run`
 
 #### Manual
 
-- [ ] 3.4 Wpis z niską glikemią + intensywnym wysiłkiem → ostrzeżenie i disclaimer widoczne natychmiast
-- [ ] 3.5 Wpis z bezpieczną glikemią lub bez aktywności → brak ostrzeżenia
+- [x] 3.4 Wpis z niską glikemią + intensywnym wysiłkiem → ostrzeżenie i disclaimer widoczne natychmiast
+- [x] 3.5 Wpis z bezpieczną glikemią lub bez aktywności → brak ostrzeżenia
 
 ### Phase 4: Testy pokrywające logikę i przepływ
 

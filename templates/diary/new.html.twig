@@ -9,6 +9,11 @@
         <p>{{ message }}</p>
     {% endfor %}
 
+    {% for message in app.flashes('warning') %}
+        <p style="color: var(--pico-del-color)">{{ message }}</p>
+        {% include '_disclaimer.html.twig' %}
+    {% endfor %}
+
     {{ form_start(form) }}
         {{ form_widget(form) }}
         <button type="submit">Zapisz wpis</button>
