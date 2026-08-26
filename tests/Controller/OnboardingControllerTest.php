@@ -62,7 +62,7 @@ class OnboardingControllerTest extends WebTestCase
             $crawler = $client->request('GET', '/onboarding');
 
             $form = $crawler->filter('main > form')->form([
-                'profile_form[baseDose]' => '12.5',
+                'profile_form[baseDose]' => '12',
                 'profile_form[insulinWwRatio]' => '1.2',
             ]);
             $client->submit($form);
@@ -72,7 +72,7 @@ class OnboardingControllerTest extends WebTestCase
             $entityManager->clear();
             $profile = $this->findProfile($entityManager, $user);
             $this->assertNotNull($profile);
-            $this->assertSame(12.5, $profile->getBaseDose());
+            $this->assertSame(12, $profile->getBaseDose());
             $this->assertSame(1.2, $profile->getInsulinWwRatio());
         } finally {
             $this->cleanupUser($entityManager, $user);
@@ -84,7 +84,7 @@ class OnboardingControllerTest extends WebTestCase
         $client = static::createClient();
         $entityManager = $this->entityManager();
         $user = $this->createUser($entityManager);
-        $profile = new PatientProfile($user, 10.0, 1.0);
+        $profile = new PatientProfile($user, 10, 1.0);
         $entityManager->persist($profile);
         $entityManager->flush();
 

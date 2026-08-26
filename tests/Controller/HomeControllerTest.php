@@ -14,7 +14,7 @@ class HomeControllerTest extends WebTestCase
         $client = static::createClient();
         $entityManager = $this->entityManager();
         $user = $this->createUser($entityManager);
-        $profile = new PatientProfile($user, 10.0, 1.0);
+        $profile = new PatientProfile($user, 10, 1.0);
         $entityManager->persist($profile);
         $entityManager->flush();
 

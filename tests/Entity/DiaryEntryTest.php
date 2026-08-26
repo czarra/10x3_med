@@ -174,12 +174,12 @@ class DiaryEntryTest extends KernelTestCase
             glycemiaMgDl: 0,
             measuredAt: new \DateTimeImmutable(),
             insulinWwRatioSnapshot: 1.2,
-            baseDoseSnapshot: 12.5,
+            baseDoseSnapshot: 13,
         );
 
         $this->assertSame(0, $entry->getGlycemiaMgDl());
         $this->assertSame(1.2, $entry->getInsulinWwRatioSnapshot());
-        $this->assertSame(12.5, $entry->getBaseDoseSnapshot());
+        $this->assertSame(13, $entry->getBaseDoseSnapshot());
         $this->assertSame($user, $entry->getUser());
     }
 
@@ -209,7 +209,7 @@ class DiaryEntryTest extends KernelTestCase
             glycemiaMgDl: 0,
             measuredAt: new \DateTimeImmutable(),
             insulinWwRatioSnapshot: 1.2,
-            baseDoseSnapshot: 12.5,
+            baseDoseSnapshot: 13,
         );
     }
 }

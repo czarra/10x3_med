@@ -474,14 +474,14 @@ Both migrations in this plan (Phase 1's type conversion, Phase 2's new tables) m
 
 #### Automated
 
-- [ ] 1.1 Migration applies cleanly on dev and test DBs
-- [ ] 1.2 phpstan passes
-- [ ] 1.3 php-cs-fixer dry-run passes
-- [ ] 1.4 Full existing test suite passes with zero deprecation failures
+- [x] 1.1 Migration applies cleanly on dev and test DBs
+- [x] 1.2 phpstan passes
+- [x] 1.3 php-cs-fixer dry-run passes
+- [x] 1.4 Full existing test suite passes with zero deprecation failures
 
 #### Manual
 
-- [ ] 1.5 `/profil` form only accepts whole numbers for base dose
+- [x] 1.5 `/profil` form only accepts whole numbers for base dose
 
 ### Phase 2: History entities, repositories, migration
 

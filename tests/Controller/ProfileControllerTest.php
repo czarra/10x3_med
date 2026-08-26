@@ -15,7 +15,7 @@ class ProfileControllerTest extends WebTestCase
         $entityManager = $this->entityManager();
         $user = $this->createUser($entityManager);
 
-        $profile = new PatientProfile($user, 10.0, 1.0);
+        $profile = new PatientProfile($user, 10, 1.0);
         $entityManager->persist($profile);
         $entityManager->flush();
 
@@ -37,7 +37,7 @@ class ProfileControllerTest extends WebTestCase
             $entityManager->clear();
             $updated = $entityManager->getRepository(PatientProfile::class)->findOneBy(['user' => $user]);
             $this->assertNotNull($updated);
-            $this->assertSame(20.0, $updated->getBaseDose());
+            $this->assertSame(20, $updated->getBaseDose());
             $this->assertSame(2.5, $updated->getInsulinWwRatio());
         } finally {
             $this->cleanupUser($entityManager, $user);

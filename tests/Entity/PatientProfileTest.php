@@ -25,17 +25,17 @@ class PatientProfileTest extends KernelTestCase
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $profile = new PatientProfile($user, 12.5, 1.2);
+        $profile = new PatientProfile($user, 13, 1.2);
         $entityManager->persist($profile);
         $entityManager->flush();
 
         try {
             $this->assertNotNull($profile->getId());
             $this->assertSame($user, $profile->getUser());
-            $this->assertSame(12.5, $profile->getBaseDose());
+            $this->assertSame(13, $profile->getBaseDose());
             $this->assertSame(1.2, $profile->getInsulinWwRatio());
 
-            $duplicate = new PatientProfile($user, 5.0, 2.0);
+            $duplicate = new PatientProfile($user, 5, 2.0);
             $entityManager->persist($duplicate);
 
             $this->expectException(UniqueConstraintViolationException::class);

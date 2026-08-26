@@ -22,7 +22,7 @@ class PatientProfile
     #[ORM\Column]
     #[Assert\Positive]
     #[Assert\LessThanOrEqual(35)]
-    private float $baseDose;
+    private int $baseDose;
 
     #[ORM\Column]
     #[Assert\Range(min: 0.1, max: 10.0)]
@@ -34,7 +34,7 @@ class PatientProfile
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
-    public function __construct(User $user, float $baseDose, float $insulinWwRatio)
+    public function __construct(User $user, int $baseDose, float $insulinWwRatio)
     {
         $this->user = $user;
         $this->baseDose = $baseDose;
@@ -53,12 +53,12 @@ class PatientProfile
         return $this->user;
     }
 
-    public function getBaseDose(): float
+    public function getBaseDose(): int
     {
         return $this->baseDose;
     }
 
-    public function setBaseDose(float $baseDose): static
+    public function setBaseDose(int $baseDose): static
     {
         $this->baseDose = $baseDose;
         $this->updatedAt = new \DateTimeImmutable();

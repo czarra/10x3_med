@@ -16,7 +16,7 @@ class DiaryControllerTest extends WebTestCase
         $client = static::createClient();
         $entityManager = $this->entityManager();
         $user = $this->createUser($entityManager);
-        $profile = $this->createProfile($entityManager, $user, 15.0, 1.5);
+        $profile = $this->createProfile($entityManager, $user, 15, 1.5);
 
         try {
             $client->loginUser($user);
@@ -53,7 +53,7 @@ class DiaryControllerTest extends WebTestCase
         $client = static::createClient();
         $entityManager = $this->entityManager();
         $user = $this->createUser($entityManager);
-        $this->createProfile($entityManager, $user, 15.0, 1.5);
+        $this->createProfile($entityManager, $user, 15, 1.5);
 
         try {
             $client->loginUser($user);
@@ -90,7 +90,7 @@ class DiaryControllerTest extends WebTestCase
         $client = static::createClient();
         $entityManager = $this->entityManager();
         $user = $this->createUser($entityManager);
-        $this->createProfile($entityManager, $user, 15.0, 1.5);
+        $this->createProfile($entityManager, $user, 15, 1.5);
 
         try {
             $client->loginUser($user);
@@ -145,7 +145,7 @@ class DiaryControllerTest extends WebTestCase
         return $user;
     }
 
-    private function createProfile(EntityManagerInterface $entityManager, User $user, float $baseDose, float $insulinWwRatio): PatientProfile
+    private function createProfile(EntityManagerInterface $entityManager, User $user, int $baseDose, float $insulinWwRatio): PatientProfile
     {
         $profile = new PatientProfile($user, $baseDose, $insulinWwRatio);
         $entityManager->persist($profile);

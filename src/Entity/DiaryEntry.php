@@ -48,12 +48,12 @@ class DiaryEntry
     private float $insulinWwRatioSnapshot;
 
     #[ORM\Column]
-    private float $baseDoseSnapshot;
+    private int $baseDoseSnapshot;
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(User $user, int $glycemiaMgDl, \DateTimeImmutable $measuredAt, float $insulinWwRatioSnapshot, float $baseDoseSnapshot)
+    public function __construct(User $user, int $glycemiaMgDl, \DateTimeImmutable $measuredAt, float $insulinWwRatioSnapshot, int $baseDoseSnapshot)
     {
         $this->user = $user;
         $this->glycemiaMgDl = $glycemiaMgDl;
@@ -150,7 +150,7 @@ class DiaryEntry
         return $this->insulinWwRatioSnapshot;
     }
 
-    public function getBaseDoseSnapshot(): float
+    public function getBaseDoseSnapshot(): int
     {
         return $this->baseDoseSnapshot;
     }
