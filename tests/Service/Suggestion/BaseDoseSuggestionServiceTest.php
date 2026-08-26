@@ -119,6 +119,30 @@ class BaseDoseSuggestionServiceTest extends KernelTestCase
         }
     }
 
+    public function testStreakIncludesLastDayEvenWhenItsEntryTimeIsEarlierThanTheFirstDaysEntry(): void
+    {
+        $entityManager = $this->boot();
+        $user = $this->createUser($entityManager);
+        $profile = $this->createProfile($entityManager, $user, 10);
+
+        try {
+            // The day-stepping cursor inherits its time-of-day from the first entry (20:00).
+            // The last day's entry is at 06:00 — earlier in the day — which must not cause
+            // the scan to stop one calendar day early and miss this final qualifying day.
+            $base = (new \DateTimeImmutable('-10 days'))->setTime(20, 0);
+            $this->createFastingEntryAt($entityManager, $user, $base, 160);
+            $this->createFastingEntryAt($entityManager, $user, $base->modify('+1 day')->setTime(6, 0), 155);
+            $this->createFastingEntryAt($entityManager, $user, $base->modify('+2 days')->setTime(6, 0), 170);
+
+            $result = $this->service()->suggestFor($user, $profile);
+
+            $this->assertTrue($result->available, 'The last calendar day must not be dropped when its entry time-of-day is earlier than the cursor\'s inherited time.');
+            $this->assertSame(11, $result->suggestedBaseDose);
+        } finally {
+            $this->cleanup($entityManager, $user);
+        }
+    }
+
     public function testFewerThanThreeQualifyingDaysYieldsNone(): void
     {
         $entityManager = $this->boot();
@@ -249,6 +273,21 @@ class BaseDoseSuggestionServiceTest extends KernelTestCase
             user: $user,
             glycemiaMgDl: $glycemiaMgDl,
             measuredAt: $day->setTime(7, 0),
+            insulinWwRatioSnapshot: 1.0,
+            baseDoseSnapshot: 10,
+        );
+        $entityManager->persist($entry);
+        $entityManager->flush();
+
+        return $entry;
+    }
+
+    private function createFastingEntryAt(EntityManagerInterface $entityManager, User $user, \DateTimeImmutable $measuredAt, int $glycemiaMgDl): DiaryEntry
+    {
+        $entry = new DiaryEntry(
+            user: $user,
+            glycemiaMgDl: $glycemiaMgDl,
+            measuredAt: $measuredAt,
             insulinWwRatioSnapshot: 1.0,
             baseDoseSnapshot: 10,
         );

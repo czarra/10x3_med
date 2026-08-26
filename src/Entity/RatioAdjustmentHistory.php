@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RatioAdjustmentHistoryRepository::class)]
 #[ORM\Table(name: 'ratio_adjustment_histories')]
+#[ORM\Index(columns: ['user_id', 'accepted_at'], name: 'idx_ratio_adjustment_histories_user_accepted_at')]
 class RatioAdjustmentHistory
 {
     #[ORM\Id]

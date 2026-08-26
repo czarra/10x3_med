@@ -96,7 +96,7 @@ final class InsulinWwRatioSuggestionService
     {
         $pairs = [];
         foreach ($entries as $meal) {
-            if (null === $meal->getWw() || null === $meal->getInsulinDose()) {
+            if (null === $meal->getWw() || $meal->getWw() <= 0.0 || null === $meal->getInsulinDose()) {
                 continue;
             }
 

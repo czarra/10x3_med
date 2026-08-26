@@ -124,7 +124,12 @@ final class BaseDoseSuggestionService
         $bestRun = null;
         $currentRun = [];
 
-        $cursor = $startDate;
+        // Normalize to midnight: the loop only ever compares calendar dates
+        // (via ->format('Y-m-d')), but $startDate/$maxDate carry whatever
+        // time-of-day their source entry/acceptance happened to have. Comparing
+        // full timestamps with mismatched times can end the loop a day early.
+        $cursor = $startDate->setTime(0, 0);
+        $maxDate = $maxDate->setTime(0, 0);
         while ($cursor <= $maxDate) {
             $dateStr = $cursor->format('Y-m-d');
             $glycemia = $fastingCandidates[$dateStr] ?? null;

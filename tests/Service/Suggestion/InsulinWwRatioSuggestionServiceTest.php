@@ -139,6 +139,29 @@ class InsulinWwRatioSuggestionServiceTest extends KernelTestCase
         }
     }
 
+    public function testZeroWwMealIsExcludedFromPairing(): void
+    {
+        $entityManager = $this->boot();
+        $user = $this->createUser($entityManager);
+        $profile = $this->createProfile($entityManager, $user, 1.0);
+
+        try {
+            $base = new \DateTimeImmutable('-10 days');
+            $this->createPair($entityManager, $user, $base, 100, 180, 4);
+            $this->createPair($entityManager, $user, $base->modify('+1 day'), 110, 185, 5);
+
+            // A ww=0 meal (e.g. protein-only/correction-only) would otherwise complete
+            // a third pair; it must not be counted, or division by zero corrupts the result.
+            $this->createPair($entityManager, $user, $base->modify('+2 days'), 95, 170, 0.0);
+
+            $result = $this->service()->suggestFor($user, $profile);
+
+            $this->assertFalse($result->available, 'A ww=0 meal must not be counted as a complete pair.');
+        } finally {
+            $this->cleanup($entityManager, $user);
+        }
+    }
+
     public function testRetriggerCutoffExcludesPreAcceptancePairs(): void
     {
         $entityManager = $this->boot();

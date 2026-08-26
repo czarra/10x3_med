@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DashboardController extends AbstractController
 {
@@ -45,6 +46,7 @@ class DashboardController extends AbstractController
         PatientProfileRepository $patientProfileRepository,
         InsulinWwRatioSuggestionService $ratioSuggestionService,
         EntityManagerInterface $entityManager,
+        ValidatorInterface $validator,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -62,6 +64,11 @@ class DashboardController extends AbstractController
         if ($suggestion->available) {
             $oldRatio = $profile->getInsulinWwRatio();
             $profile->setInsulinWwRatio($suggestion->suggestedRatio);
+
+            if (\count($validator->validate($profile)) > 0) {
+                return $this->redirectToRoute('patient_dashboard');
+            }
+
             $entityManager->persist(new RatioAdjustmentHistory(
                 user: $user,
                 oldRatio: $oldRatio,
@@ -82,6 +89,7 @@ class DashboardController extends AbstractController
         PatientProfileRepository $patientProfileRepository,
         BaseDoseSuggestionService $baseDoseSuggestionService,
         EntityManagerInterface $entityManager,
+        ValidatorInterface $validator,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -99,6 +107,11 @@ class DashboardController extends AbstractController
         if ($suggestion->available) {
             $oldBaseDose = $profile->getBaseDose();
             $profile->setBaseDose($suggestion->suggestedBaseDose);
+
+            if (\count($validator->validate($profile)) > 0) {
+                return $this->redirectToRoute('patient_dashboard');
+            }
+
             $entityManager->persist(new BaseDoseAdjustmentHistory(
                 user: $user,
                 oldBaseDose: $oldBaseDose,
