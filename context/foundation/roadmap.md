@@ -48,7 +48,7 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 | S-02 | log-diary-entry                   | Pacjent dodaje wpis do dzienniczka (glikemia + opcjonalne pola)     | S-01            | FR-004, FR-005, FR-006, FR-007 | done |
 | S-03 | insulin-ww-ratio-suggestion       | Pacjent dostaje sugestię skorygowanego przelicznika insulina/WW     | S-02            | FR-009, FR-011, US-01    | done |
 | S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | done |
-| S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | proposed |
+| S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | in-progress |
 | S-06 | edit-delete-diary-entry           | Pacjent edytuje/usuwa ostatni wpis (do 24h od utworzenia)            | S-02            | FR-014                   | proposed |
 | S-07 | export-diary-history               | Pacjent eksportuje historię i sugerowane przeliczniki do PDF/CSV     | S-05, S-03      | FR-012                   | proposed |
 
@@ -214,7 +214,7 @@ odtwarzają.
 - **Unknowns:** —
 - **Risk:** Element czysto prezentacyjny, niskie ryzyko — ale musi wylądować
   przed eksportem (S-07), bo eksport pakuje ten sam widok historii.
-- **Status:** proposed
+- **Status:** in-progress
 
 ### S-06: Edycja/usunięcie ostatniego wpisu
 
