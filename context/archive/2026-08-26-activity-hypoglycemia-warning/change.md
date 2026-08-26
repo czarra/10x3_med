@@ -1,10 +1,10 @@
 ---
 change_id: activity-hypoglycemia-warning
 title: Hypoglycemia risk warning on exercise entries
-status: impl_reviewed
+status: archived
 created: 2026-08-26
 updated: 2026-08-26
-archived_at: null
+archived_at: 2026-08-26T12:31:44Z
 ---
 
 ## Notes
