@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historia wpisów{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/diary-chart.css">
+{% endblock %}
+
+{% block body %}
+    <h1>Historia wpisów</h1>
+
+    {% if not historyPage.hasEntries %}
+        <article>
+            <p>Brak wpisów w dzienniczku.</p>
+            <p><a href="{{ path('diary_entry_new') }}">Dodaj pierwszy wpis</a></p>
+        </article>
+    {% else %}
+        <article>
+            <h2>Glikemia — ostatnie 7 dni</h2>
+            <svg viewBox="0 0 {{ chart.viewBoxWidth }} {{ chart.viewBoxHeight }}" role="img" aria-label="Wykres glikemii z ostatnich 7 dni">
+                {% for band in chart.zoneBands %}
+                    <rect x="0" y="{{ band.y }}" width="{{ chart.viewBoxWidth }}" height="{{ band.height }}" class="{{ band.cssClass }}"></rect>
+                    <text x="4" y="{{ band.y + band.height / 2 }}" class="zone-label">{{ band.label }}</text>
+                {% endfor %}
+
+                {% for label in chart.xAxisLabels %}
+                    <text x="{{ label.x }}" y="{{ chart.viewBoxHeight - 4 }}" class="axis-label">{{ label.label }}</text>
+                {% endfor %}
+
+                {% if chart.hasPoints %}
+                    <polyline points="{{ chart.polylinePoints }}" class="glycemia-line"></polyline>
+                    {% for point in chart.points %}
+                        <circle cx="{{ point.x }}" cy="{{ point.y }}" r="3" class="glycemia-point">
+                            <title>{{ point.measuredAt|date('d.m.Y H:i') }} — {{ point.glycemiaMgDl }} mg/dL</title>
+                        </circle>
+                    {% endfor %}
+                {% endif %}
+            </svg>
+        </article>
+
+        {% for dayGroup in historyPage.dayGroups %}
+            <article>
+                <h2>{{ dayGroup.date|date('d.m.Y') }}</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Godzina</th>
+                            <th>Glikemia (mg/dL)</th>
+                            <th>WW</th>
+                            <th>Insulina (j.)</th>
+                            <th>Aktywność</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in dayGroup.entries %}
+                            <tr>
+                                <td>{{ entry.measuredAt|date('H:i') }}</td>
+                                <td>{{ entry.glycemiaMgDl }}</td>
+                                <td>{{ entry.ww ?? '—' }}</td>
+                                <td>{{ entry.insulinDose ?? '—' }}</td>
+                                <td>
+                                    {% if entry.activityIntensity is not null %}
+                                        {{ entry.activityIntensity.value }}, {{ entry.activityDurationMinutes }} min
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+        {% endfor %}
+
+        <nav>
+            <ul>
+                {% if historyPage.currentPage < historyPage.totalPages %}
+                    <li><a href="{{ path('diary_entry_history', {page: historyPage.currentPage + 1}) }}">Starsze</a></li>
+                {% endif %}
+            </ul>
+            <ul>
+                {% if historyPage.currentPage > 1 %}
+                    <li><a href="{{ path('diary_entry_history', {page: historyPage.currentPage - 1}) }}">Nowsze</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

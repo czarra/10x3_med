@@ -35,6 +35,7 @@
                                     <li><a href="{{ path('patient_dashboard') }}">Pulpit</a></li>
                                     <li><a href="{{ path('patient_profile') }}">Przejdź do profilu</a></li>
                                     <li><a href="{{ path('diary_entry_new') }}">Dodaj wpis</a></li>
+                                    <li><a href="{{ path('diary_entry_history') }}">Historia wpisów</a></li>
                                     <li>
                                         <form method="post" action="{{ path('app_logout') }}">
                                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">

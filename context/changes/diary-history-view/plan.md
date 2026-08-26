@@ -339,23 +339,23 @@ No schema changes — reuses the existing `diary_entries` table.
 
 #### Automated
 
-- [x] 1.1 Unit/kernel tests pass
-- [x] 1.2 Static analysis passes
-- [x] 1.3 Code style passes
+- [x] 1.1 Unit/kernel tests pass — 2504716
+- [x] 1.2 Static analysis passes — 2504716
+- [x] 1.3 Code style passes — 2504716
 
 ### Phase 2: Route, Controller, Template, Navigation
 
 #### Automated
 
-- [ ] 2.1 Full test suite passes
-- [ ] 2.2 Static analysis passes
-- [ ] 2.3 Code style passes
+- [x] 2.1 Full test suite passes
+- [x] 2.2 Static analysis passes
+- [x] 2.3 Code style passes
 
 #### Manual
 
-- [ ] 2.4 Empty state verified (no entries, no chart/pagination)
-- [ ] 2.5 Day-grouping and field display verified across multiple days
-- [ ] 2.6 Pagination verified, including out-of-range `?page=` clamping
-- [ ] 2.7 Chart zone shading and point placement verified
-- [ ] 2.8 Nav link verified
-- [ ] 2.9 Auth/onboarding gate behavior on the new route verified
+- [x] 2.4 Empty state verified (no entries, no chart/pagination)
+- [x] 2.5 Day-grouping and field display verified across multiple days
+- [x] 2.6 Pagination verified, including out-of-range `?page=` clamping
+- [x] 2.7 Chart zone shading and point placement verified
+- [x] 2.8 Nav link verified
+- [x] 2.9 Auth/onboarding gate behavior on the new route verified

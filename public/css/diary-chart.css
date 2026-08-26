@@ -1,0 +1,35 @@
+.zone-hipo {
+    fill: #f8d7da;
+}
+
+.zone-norma {
+    fill: #d4edda;
+}
+
+.zone-hiper {
+    fill: #fde2c8;
+}
+
+.zone-label {
+    font-size: 11px;
+    fill: #333;
+    dominant-baseline: middle;
+}
+
+.axis-label {
+    font-size: 10px;
+    fill: #666;
+    text-anchor: middle;
+}
+
+.glycemia-line {
+    fill: none;
+    stroke: #0d6efd;
+    stroke-width: 2;
+}
+
+.glycemia-point {
+    fill: #0d6efd;
+    stroke: #ffffff;
+    stroke-width: 1;
+}

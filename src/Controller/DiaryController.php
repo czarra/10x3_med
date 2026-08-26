@@ -6,6 +6,8 @@ use App\Entity\DiaryEntry;
 use App\Entity\User;
 use App\Form\DiaryEntryFormType;
 use App\Repository\PatientProfileRepository;
+use App\Service\Chart\GlucoseHistoryChartService;
+use App\Service\History\DiaryHistoryService;
 use App\Service\Warning\HypoglycemiaWarningService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,6 +55,23 @@ class DiaryController extends AbstractController
 
         return $this->render('diary/new.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/dziennik/historia', name: 'diary_entry_history', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function history(Request $request, DiaryHistoryService $diaryHistoryService, GlucoseHistoryChartService $glucoseHistoryChartService): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $page = max(1, $request->query->getInt('page', 1));
+        $historyPage = $diaryHistoryService->buildPage($user, $page);
+        $chart = $glucoseHistoryChartService->buildFor($user, new \DateTimeImmutable());
+
+        return $this->render('diary/history.html.twig', [
+            'historyPage' => $historyPage,
+            'chart' => $chart,
         ]);
     }
 }

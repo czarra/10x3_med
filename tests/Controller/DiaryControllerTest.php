@@ -186,6 +186,131 @@ class DiaryControllerTest extends WebTestCase
         }
     }
 
+    public function testHistoryShowsEmptyStateWhenNoEntries(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseIsSuccessful();
+            $this->assertSelectorTextContains('main', 'Brak wpisów w dzienniczku.');
+            $this->assertSelectorNotExists('main svg');
+            $this->assertSelectorNotExists('main table');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testHistoryShowsChartAndDayGroupsWithFieldFallbacks(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $this->createEntry($entityManager, $user, 65, new \DateTimeImmutable('-1 day'));
+            $this->createEntry($entityManager, $user, 200, new \DateTimeImmutable('-2 days'));
+
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseIsSuccessful();
+            $this->assertSelectorExists('main svg');
+            $this->assertSelectorExists('main svg polyline.glycemia-line');
+            $this->assertCount(2, $crawler->filter('main table tbody tr'));
+            $this->assertSelectorTextContains('main table', '—');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testHistoryPaginatesAcrossMoreThanSevenDayGroups(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $base = new \DateTimeImmutable('-9 days');
+            for ($i = 0; $i < 9; ++$i) {
+                $this->createEntry($entityManager, $user, 100, $base->modify('+'.$i.' days'));
+            }
+
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseIsSuccessful();
+            $this->assertSelectorTextContains('main', 'Starsze');
+            $this->assertSelectorTextNotContains('main', 'Nowsze');
+
+            $link = $crawler->selectLink('Starsze')->link();
+            $client->click($link);
+
+            $this->assertResponseIsSuccessful();
+            $this->assertSelectorTextContains('main', 'Nowsze');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testHistoryClampsOutOfRangePageQuery(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $this->createEntry($entityManager, $user, 100, new \DateTimeImmutable('-1 day'));
+
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/historia?page=999');
+
+            $this->assertResponseIsSuccessful();
+            $this->assertSelectorTextNotContains('main', 'Brak wpisów w dzienniczku.');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testHistoryProfilelessAuthenticatedUserIsRedirectedToOnboarding(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseRedirects('/onboarding');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    private function createEntry(EntityManagerInterface $entityManager, User $user, int $glycemiaMgDl, \DateTimeImmutable $measuredAt): DiaryEntry
+    {
+        $entry = new DiaryEntry(
+            user: $user,
+            glycemiaMgDl: $glycemiaMgDl,
+            measuredAt: $measuredAt,
+            insulinWwRatioSnapshot: 1.0,
+            baseDoseSnapshot: 10,
+        );
+        $entityManager->persist($entry);
+        $entityManager->flush();
+
+        return $entry;
+    }
+
     private function entityManager(): EntityManagerInterface
     {
         return static::getContainer()->get(EntityManagerInterface::class);
