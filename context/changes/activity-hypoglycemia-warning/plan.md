@@ -388,23 +388,23 @@ Nie dotyczy — brak zmian schematu bazy danych.
 
 #### Automated
 
-- [x] 3.1 Istniejące testy `DiaryControllerTest` nadal przechodzą
-- [x] 3.2 Statyczna analiza: `phpstan analyse`
-- [x] 3.3 Styl kodu: `php-cs-fixer fix --dry-run`
+- [x] 3.1 Istniejące testy `DiaryControllerTest` nadal przechodzą — 797123d
+- [x] 3.2 Statyczna analiza: `phpstan analyse` — 797123d
+- [x] 3.3 Styl kodu: `php-cs-fixer fix --dry-run` — 797123d
 
 #### Manual
 
-- [x] 3.4 Wpis z niską glikemią + intensywnym wysiłkiem → ostrzeżenie i disclaimer widoczne natychmiast
-- [x] 3.5 Wpis z bezpieczną glikemią lub bez aktywności → brak ostrzeżenia
+- [x] 3.4 Wpis z niską glikemią + intensywnym wysiłkiem → ostrzeżenie i disclaimer widoczne natychmiast — 797123d
+- [x] 3.5 Wpis z bezpieczną glikemią lub bez aktywności → brak ostrzeżenia — 797123d
 
 ### Phase 4: Testy pokrywające logikę i przepływ
 
 #### Automated
 
-- [ ] 4.1 `phpstan analyse`
-- [ ] 4.2 `php-cs-fixer fix --dry-run`
-- [ ] 4.3 `phpunit` (pełny gate)
+- [x] 4.1 `phpstan analyse`
+- [x] 4.2 `php-cs-fixer fix --dry-run`
+- [x] 4.3 `phpunit` (pełny gate)
 
 #### Manual
 
-- [ ] 4.4 Przegląd wyniku `phpunit` pod kątem `failOnDeprecation`/`failOnNotice`
+- [x] 4.4 Przegląd wyniku `phpunit` pod kątem `failOnDeprecation`/`failOnNotice`

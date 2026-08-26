@@ -85,6 +85,63 @@ class DiaryControllerTest extends WebTestCase
         }
     }
 
+    public function testRiskyActivitySubmissionShowsHypoglycemiaWarningAndDisclaimer(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/nowy');
+
+            $form = $crawler->filter('main > form')->form();
+            $form->setValues([
+                'diary_entry_form[glycemiaMgDl]' => '80',
+                'diary_entry_form[measuredAt]' => (new \DateTimeImmutable())->format('Y-m-d\TH:i'),
+                'diary_entry_form[activityIntensity]' => ActivityIntensity::Strong->value,
+                'diary_entry_form[activityDurationMinutes]' => '45',
+            ]);
+            $client->submit($form);
+
+            $this->assertResponseRedirects('/dziennik/nowy');
+            $client->followRedirect();
+            $this->assertSelectorTextContains('main', 'istnieje ryzyko hipoglikemii');
+            $this->assertSelectorTextContains('main', 'Sugestia ma charakter algorytmiczny i nie zastępuje konsultacji lekarskiej.');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testSafeActivitySubmissionShowsNoHypoglycemiaWarning(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/nowy');
+
+            $form = $crawler->filter('main > form')->form();
+            $form->setValues([
+                'diary_entry_form[glycemiaMgDl]' => '180',
+                'diary_entry_form[measuredAt]' => (new \DateTimeImmutable())->format('Y-m-d\TH:i'),
+                'diary_entry_form[activityIntensity]' => ActivityIntensity::Light->value,
+                'diary_entry_form[activityDurationMinutes]' => '15',
+            ]);
+            $client->submit($form);
+
+            $this->assertResponseRedirects('/dziennik/nowy');
+            $client->followRedirect();
+            $this->assertStringNotContainsString('istnieje ryzyko hipoglikemii', (string) $client->getResponse()->getContent());
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
     public function testInvalidGlucoseReRendersFormWithoutPersisting(): void
     {
         $client = static::createClient();
