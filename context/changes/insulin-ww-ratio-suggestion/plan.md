@@ -495,39 +495,39 @@ Both migrations in this plan (Phase 1's type conversion, Phase 2's new tables) m
 
 #### Automated
 
-- [x] 3.1 phpstan passes
-- [x] 3.2 New method covered by Phase 6 service tests
+- [x] 3.1 phpstan passes — 86db03f
+- [x] 3.2 New method covered by Phase 6 service tests — 86db03f
 
 ### Phase 4: Suggestion service layer
 
 #### Automated
 
-- [x] 4.1 phpstan passes
-- [x] 4.2 All Phase 6 unit tests for both services pass
+- [x] 4.1 phpstan passes — 86db03f
+- [x] 4.2 All Phase 6 unit tests for both services pass — 86db03f
 
 ### Phase 5: Controller, routes, templates, security wiring
 
 #### Automated
 
-- [x] 5.1 phpstan passes
-- [x] 5.2 php-cs-fixer dry-run passes
-- [x] 5.3 Phase 6 controller tests pass
+- [x] 5.1 phpstan passes — 86db03f
+- [x] 5.2 php-cs-fixer dry-run passes — 86db03f
+- [x] 5.3 Phase 6 controller tests pass — 86db03f
 
 #### Manual
 
-- [x] 5.4 Insufficient-data patient sees neutral messages on `/pulpit`, no crash
-- [x] 5.5 Ratio worked-example patient sees correct card + disclaimer; Accept updates `/profil`
-- [x] 5.6 Base-dose worked-example patient sees correct card + disclaimer; Accept updates `/profil`
-- [x] 5.7 Nav link to `/pulpit` visible and working
+- [x] 5.4 Insufficient-data patient sees neutral messages on `/pulpit`, no crash — 86db03f
+- [x] 5.5 Ratio worked-example patient sees correct card + disclaimer; Accept updates `/profil` — 86db03f
+- [x] 5.6 Base-dose worked-example patient sees correct card + disclaimer; Accept updates `/profil` — 86db03f
+- [x] 5.7 Nav link to `/pulpit` visible and working — 86db03f
 
 ### Phase 6: Testing
 
 #### Automated
 
-- [x] 6.1 Full suite passes
-- [x] 6.2 phpstan passes
-- [x] 6.3 php-cs-fixer dry-run passes
+- [x] 6.1 Full suite passes — 86db03f
+- [x] 6.2 phpstan passes — 86db03f
+- [x] 6.3 php-cs-fixer dry-run passes — 86db03f
 
 #### Manual
 
-- [x] 6.4 Phase 5 manual steps re-confirmed, no regressions in onboarding/profile/diary/home flows
+- [x] 6.4 Phase 5 manual steps re-confirmed, no regressions in onboarding/profile/diary/home flows — 86db03f
