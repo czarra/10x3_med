@@ -2,75 +2,45 @@
 # Implementation Review: S-03 Sugestia skorygowanego przelicznika insulina/WW
 
 - **Plan**: context/changes/insulin-ww-ratio-suggestion/plan.md
-- **Scope**: All 6 phases (full plan)
+- **Scope**: All 6 phases (full plan) — verification pass after F1-F4 fixes (commit 04004b8)
 - **Date**: 2026-08-26
-- **Verdict**: REJECTED
-- **Findings**: 1 critical, 2 warnings, 1 observation
+- **Verdict**: APPROVED
+- **Findings**: 0 critical, 0 warnings, 1 observation
+
+## Previously identified and fixed (round 1, see git history of this file at commit 04004b8)
+
+F1 (division-by-zero/NaN in meal pairing), F2 (off-by-one in streak scan), F3 (missing validator before flush), F4 (missing composite index) were all independently re-verified in this pass and confirmed correctly fixed, each with a regression test reproducing the original failure mode. No regressions introduced by these fixes.
+
+Two claims raised during this pass were investigated and **dismissed as non-issues**:
+- A suspected "sibling" off-by-one at `BaseDoseSuggestionService.php:48` (`$dayAfterCutoff > $startDate` compared as full timestamps before `findMostRecentRun()` normalizes to midnight) — traced through by hand: since the loop always normalizes both operands to midnight before use, any time-of-day skew in this earlier comparison is neutralized; timestamp ordering across distinct calendar dates always agrees with calendar-date ordering, so the comparison cannot select the wrong day. Not a bug.
+- Absence of a flash message when the validator rejects a value in `DashboardController::acceptRatio`/`acceptBaseDose` — this is intentional, mirroring the plan's own documented "no longer available (race)" path: redirect, no DB write, no flash.
 
 ## Verdicts
 
 | Dimension | Verdict |
 |-----------|---------|
-| Plan Adherence | WARNING |
+| Plan Adherence | PASS |
 | Scope Discipline | PASS |
-| Safety & Quality | FAIL |
+| Safety & Quality | PASS |
 | Architecture | PASS |
 | Pattern Consistency | PASS |
 | Success Criteria | PASS |
 
 ## Findings
 
-### F1 — Division-by-zero / NaN corruption in ratio-suggestion pairing
-
-- **Severity**: CRITICAL
-- **Impact**: MEDIUM — real tradeoff; pause to reason through it
-- **Dimension**: Safety & Quality
-- **Location**: src/Service/Suggestion/InsulinWwRatioSuggestionService.php:69 (magnitude calc), :99 (buildMealPairs)
-- **Detail**: The magnitude step divides `nadwyzka / $ww`, where `$ww` comes from `DiaryEntry::getWw()` — nullable float, validated only with an upper bound (`Assert\Range(min: 0, max: 20)`). `0` is a legitimate value (protein-only meal, correction-only bolus) that a user can enter via the diary form. `buildMealPairs()` only excludes `ww === null`, not `ww === 0.0`, so a zero-WW meal can enter pairing and produce `INF`/`NaN`, which then propagates through averaging and the min/max clamp (PHP's NaN comparisons are unreliable). `DashboardController::acceptRatio` persists the result via setter + `flush()` **without re-running the Symfony Validator** (unlike `ProfileController`, which validates through a Form) — so a NaN/INF value could be written straight into `patient_profiles.insulin_ww_ratio`, corrupting the dosing baseline for a medical-adjacent field. No test covers `ww = 0`.
-- **Fix**: In `buildMealPairs()`, exclude meal entries with `ww <= 0.0` from pairing (same treatment as "no after-reading found" — unpairable), and add a regression test for `ww = 0`.
-  - Strength: Reuses the exclusion pattern already in place for unmatched pairs; scoped to the one function that constructs pairs, no change to `suggestFor()`'s public contract.
-  - Tradeoff: A protein-only/correction-only entry will never contribute to a ratio suggestion, even if its glycemia delta is meaningful — consistent with the algorithm's carb-ratio purpose, but worth a quick confirm with the product owner.
-  - Confidence: HIGH — the null-check already exists at this exact call site; widening it to `<= 0.0` is a one-line, low-risk change.
-  - Blind spot: Haven't checked whether existing seed/test data relies on `ww = 0` entries pairing successfully today.
-- **Decision**: FIXED — excluded `ww <= 0.0` from `buildMealPairs()` (src/Service/Suggestion/InsulinWwRatioSuggestionService.php:99) and added `testZeroWwMealIsExcludedFromPairing` regression test.
-
-### F2 — Off-by-one boundary bug can silently drop the most recent day from the base-dose streak scan
-
-- **Severity**: WARNING
-- **Impact**: MEDIUM — real tradeoff; pause to reason through it
-- **Dimension**: Plan Adherence
-- **Location**: src/Service/Suggestion/BaseDoseSuggestionService.php:122-159 (findMostRecentRun)
-- **Detail**: `$cursor` steps forward one whole day at a time while preserving time-of-day. `$startDate`'s time-of-day comes from either the first entry or `$cutoffDate + 1 day` (the time a *prior suggestion was accepted*, unrelated to any diary entry), while `$maxDate` is the literal timestamp of the last entry. If the last entry's time-of-day is earlier than `$cursor`'s inherited time-of-day on the same calendar date, `while ($cursor <= $maxDate)` exits one iteration early and silently drops the most recent calendar day from the scan — a real, qualifying suggestion could go undetected. Untested: every fixture in `BaseDoseSuggestionServiceTest.php` uses a uniform `setTime(7, 0)`, so `$cursor` and `$maxDate` always share time-of-day there. In production, `acceptedAt` is `new \DateTimeImmutable()` at click time and diary entries carry whatever time the user logged them, so the mismatch is reachable.
-- **Fix**: Normalize both `$cursor` and `$maxDate` to midnight (or compare via `->format('Y-m-d')`) before the day-stepping loop, so the loop compares calendar dates only.
-  - Strength: Removes the whole class of time-of-day boundary bugs in one change, matching the algorithm's stated "calendar date" semantics exactly.
-  - Tradeoff: Requires re-checking that nothing else inside the loop body relies on the preserved time-of-day.
-  - Confidence: MED — the fix direction is clear; the full blast radius inside the method hasn't been traced line by line.
-  - Blind spot: Haven't verified whether any other part of `BaseDoseSuggestionService` also assumes a non-midnight cursor time.
-- **Decision**: FIXED — normalized `$cursor`/`$maxDate` to midnight in `findMostRecentRun` (src/Service/Suggestion/BaseDoseSuggestionService.php:131-132) and added `testStreakIncludesLastDayEvenWhenItsEntryTimeIsEarlierThanTheFirstDaysEntry`, verified to fail without the fix and pass with it.
-
-### F3 — Suggested values persisted without re-running entity validation
-
-- **Severity**: WARNING
-- **Impact**: LOW — quick decision; fix is obvious and narrowly scoped
-- **Dimension**: Safety & Quality
-- **Location**: src/Controller/DashboardController.php:64, 101
-- **Detail**: Both accept actions write via `PatientProfile` setter + `flush()`, relying solely on the service's manual clamp rather than the Symfony Validator that `ProfileController::edit` runs through a Form. The clamp bounds match the entity's `Assert` constraints today, so this isn't independently exploitable — but it's the safety net that would have caught F1's NaN/INF value before it reached the database, and silently stops protecting if the clamp bounds and entity constraints ever drift apart.
-- **Fix**: Validate the profile via the injected `ValidatorInterface` before `flush()` in both accept actions; on failure, redirect without writing (mirroring the existing "no longer available" race-handling path).
-- **Decision**: FIXED — injected `ValidatorInterface` into both `acceptRatio`/`acceptBaseDose`; redirects with no history persist / no flush / no flash if `validate($profile)` returns violations (src/Controller/DashboardController.php).
-
-### F4 — No composite index for history-table cutoff lookups
+### F5 — Validator-rejection branch has no dedicated regression test
 
 - **Severity**: OBSERVATION
-- **Impact**: LOW — quick decision; fix is obvious and narrowly scoped
-- **Dimension**: Safety & Quality (performance)
-- **Location**: migrations/Version20260826080806.php:24,26
-- **Detail**: `findLatestByUser()` on both history repositories filters by `user_id` and sorts by `accepted_at DESC LIMIT 1`, but only `user_id` is indexed. Non-issue at MVP data volumes.
-- **Fix**: Add a composite `(user_id, accepted_at)` index in a follow-up migration if history rows grow large per user.
-- **Decision**: FIXED — added `#[ORM\Index(columns: ['user_id', 'accepted_at'])]` to both history entities and generated/applied migration `Version20260826092028` on dev and test DBs.
+- **Impact**: 🏃 LOW — quick decision; fix is obvious and narrowly scoped
+- **Dimension**: Success Criteria (test coverage)
+- **Location**: src/Controller/DashboardController.php:68, 111
+- **Detail**: Both accept actions call `$validator->validate($profile)` and redirect without persisting if violations exist (the F3 fix). No test in `tests/Controller/DashboardControllerTest.php` forces the validator to actually return a violation — `grep -n "validat" tests/Controller/DashboardControllerTest.php` finds nothing. In current code this branch is unreachable in practice (the suggestion services already clamp to the entity's valid range before returning), so it functions purely as a defensive backstop against future drift between clamp bounds and entity constraints — but that backstop itself is currently unverified by any test.
+- **Fix**: Add a test that forces a validator violation on the accept path (e.g. a test-only profile state or a mocked/stubbed suggestion result outside the entity's valid range) and asserts no DB write / no flash occurs, confirming the guard isn't dead code.
+- **Decision**: FIXED — added `testAcceptRatioWithInvalidProfileStateMakesNoDbChanges` (tests/Controller/DashboardControllerTest.php), which persists a `PatientProfile` with `baseDose = 40` (violates `Assert\LessThanOrEqual(35)`) directly via the entity manager, then drives the ratio-accept POST. Verified to fail (red) when the `ValidatorInterface::validate($profile)` guard in `DashboardController::acceptRatio` is stubbed out, and pass (green) with the guard in place — proves the F3 backstop is live, not dead code. Full suite re-run: phpstan 0 errors, php-cs-fixer 0/50 files, phpunit 59 tests / 179 assertions, all green.
 
 ## Notes for the record (not findings — no action needed)
 
-- Both agents confirmed all 8 worked numeric examples (4 ratio + 4 base-dose) reproduce exactly when hand-traced against the actual code.
-- No MISSING or EXTRA files versus the plan's file list; no unplanned scope creep.
-- CSRF handling, IDOR scoping, authn/authz, migration reversibility, and pattern consistency (constructors, repository shape, CSRF form pattern) all checked out clean.
-- The float→int migration's `down()` widens the column type back to `DOUBLE PRECISION` without restoring lost fractional precision — inherent to a narrowing conversion, not a fixable gap.
+- All 8 worked numeric examples (4 ratio + 4 base-dose) reproduce exactly when hand-traced against the current code, including after the F1/F2 fixes.
+- Automated verification re-run in full for this pass: `phpstan analyse` — 0 errors; `php-cs-fixer fix --dry-run` — 0 of 50 files need changes; `phpunit` — 58 tests, 173 assertions, all green; migrations status on `dev` — 6/6 executed, 0 new, matches `Version20260826092028` (latest).
+- Nav link (`templates/base.html.twig`) is implemented as a dropdown entry rather than the flat `<li>` shown in the plan's template contract — functionally equivalent (link present, working, per Phase 5 manual criterion 5.7), a cosmetic deviation only, not scope drift.
+- CSRF handling, IDOR scoping (profile always re-fetched via `findOneByUser($user)`, never trusts a posted id), authn/authz, migration reversibility (`down()` on all 3 new/altered migrations), and repository/entity pattern consistency with `DiaryEntryRepository`/`DiaryEntry` all checked out clean.

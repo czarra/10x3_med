@@ -160,6 +160,42 @@ class DashboardControllerTest extends WebTestCase
         }
     }
 
+    public function testAcceptRatioWithInvalidProfileStateMakesNoDbChanges(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        // baseDose = 40 violates PatientProfile's own Assert\LessThanOrEqual(35).
+        // Persisting directly (not through a validated Form) bypasses that check at
+        // write time, letting us force the defensive ValidatorInterface::validate()
+        // guard in DashboardController::acceptRatio to actually reject and prove it
+        // isn't dead code.
+        $this->createProfile($entityManager, $user, 40, 1.0);
+
+        try {
+            $base = new \DateTimeImmutable('-10 days');
+            $this->createPair($entityManager, $user, $base, 100, 180, 4);
+            $this->createPair($entityManager, $user, $base->modify('+1 day'), 110, 185, 5);
+            $this->createPair($entityManager, $user, $base->modify('+2 days'), 95, 170, 3);
+
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/pulpit');
+            $form = $crawler->selectButton('Zapisz nowy przelicznik w profilu')->form();
+            $client->submit($form);
+
+            $this->assertResponseRedirects('/pulpit');
+            $client->followRedirect();
+            $this->assertSelectorTextNotContains('main', 'Przelicznik insulina/WW został zaktualizowany.');
+
+            $entityManager->clear();
+            $profile = $entityManager->getRepository(PatientProfile::class)->findOneBy(['user' => $user]);
+            $this->assertSame(1.0, $profile->getInsulinWwRatio());
+            $this->assertCount(0, $entityManager->getRepository(RatioAdjustmentHistory::class)->findBy(['user' => $user]));
+        } finally {
+            $this->cleanup($entityManager, $user);
+        }
+    }
+
     public function testProfilelessAuthenticatedUserIsRedirectedToOnboarding(): void
     {
         $client = static::createClient();
