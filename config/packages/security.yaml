@@ -27,4 +27,4 @@ security:
                 target: app_login
 
     access_control:
-        - { path: ^/(onboarding|profil)$|^/dziennik(/|$), roles: ROLE_USER }
+        - { path: ^/(onboarding|profil)$|^/dziennik(/|$)|^/pulpit(/|$), roles: ROLE_USER }

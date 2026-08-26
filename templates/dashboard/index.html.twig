@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pulpit{% endblock %}
+
+{% block body %}
+    <h1>Pulpit</h1>
+
+    {% for message in app.flashes('success') %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    <article>
+        <h2>Przelicznik insulina/WW</h2>
+        {% if ratioSuggestion.available %}
+            <p>{{ ratioSuggestion.context }}</p>
+            <p>Obecny przelicznik: {{ ratioSuggestion.currentRatio }} &rarr; Sugerowany: {{ ratioSuggestion.suggestedRatio }}</p>
+            <form method="post" action="{{ path('patient_dashboard_accept_ratio') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('accept_ratio_suggestion') }}">
+                <button type="submit">Zapisz nowy przelicznik w profilu</button>
+            </form>
+        {% else %}
+            <p>Brak wystarczających danych do zasugerowania zmiany przelicznika lub obecny przelicznik dobrze dopasowany.</p>
+        {% endif %}
+        <p><small>Sugestia ma charakter algorytmiczny i nie zastępuje konsultacji lekarskiej. Każdą zmianę dawkowania skonsultuj z lekarzem prowadzącym.</small></p>
+    </article>
+
+    <article>
+        <h2>Dawka bazowa</h2>
+        {% if baseDoseSuggestion.available %}
+            <p>{{ baseDoseSuggestion.context }}</p>
+            <p>Obecna dawka bazowa: {{ baseDoseSuggestion.currentBaseDose }} j. &rarr; Sugerowana: {{ baseDoseSuggestion.suggestedBaseDose }} j.</p>
+            <form method="post" action="{{ path('patient_dashboard_accept_base_dose') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('accept_base_dose_suggestion') }}">
+                <button type="submit">Zapisz nową dawkę bazową w profilu</button>
+            </form>
+        {% else %}
+            <p>Brak wystarczających danych do zasugerowania zmiany dawki bazowej lub obecna dawka dobrze dopasowana.</p>
+        {% endif %}
+        <p><small>Sugestia ma charakter algorytmiczny i nie zastępuje konsultacji lekarskiej. Każdą zmianę dawkowania skonsultuj z lekarzem prowadzącym.</small></p>
+    </article>
+{% endblock %}
