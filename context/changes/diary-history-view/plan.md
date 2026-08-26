@@ -347,15 +347,15 @@ No schema changes — reuses the existing `diary_entries` table.
 
 #### Automated
 
-- [x] 2.1 Full test suite passes
-- [x] 2.2 Static analysis passes
-- [x] 2.3 Code style passes
+- [x] 2.1 Full test suite passes — 1ddbafc
+- [x] 2.2 Static analysis passes — 1ddbafc
+- [x] 2.3 Code style passes — 1ddbafc
 
 #### Manual
 
-- [x] 2.4 Empty state verified (no entries, no chart/pagination)
-- [x] 2.5 Day-grouping and field display verified across multiple days
-- [x] 2.6 Pagination verified, including out-of-range `?page=` clamping
-- [x] 2.7 Chart zone shading and point placement verified
-- [x] 2.8 Nav link verified
-- [x] 2.9 Auth/onboarding gate behavior on the new route verified
+- [x] 2.4 Empty state verified (no entries, no chart/pagination) — 1ddbafc
+- [x] 2.5 Day-grouping and field display verified across multiple days — 1ddbafc
+- [x] 2.6 Pagination verified, including out-of-range `?page=` clamping — 1ddbafc
+- [x] 2.7 Chart zone shading and point placement verified — 1ddbafc
+- [x] 2.8 Nav link verified — 1ddbafc
+- [x] 2.9 Auth/onboarding gate behavior on the new route verified — 1ddbafc
