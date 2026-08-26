@@ -34,4 +34,17 @@ class DiaryEntryRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @return DiaryEntry[]
+     */
+    public function findByUserOrderedByMeasuredAtDesc(User $user): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('e.measuredAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

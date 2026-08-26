@@ -29,3 +29,13 @@ when@test:
         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
             alias: security.user_password_hasher
             public: true
+
+        # Phase 1 of diary-history-view: not yet consumed by a controller, so
+        # the compiler prunes them as unreachable unless kept public for tests.
+        # Remove once DiaryController::history() wires them in (Phase 2).
+        App\Service\History\DiaryHistoryService:
+            autowire: true
+            public: true
+        App\Service\Chart\GlucoseHistoryChartService:
+            autowire: true
+            public: true
