@@ -401,10 +401,10 @@ Nie dotyczy — brak zmian schematu bazy danych.
 
 #### Automated
 
-- [x] 4.1 `phpstan analyse`
-- [x] 4.2 `php-cs-fixer fix --dry-run`
-- [x] 4.3 `phpunit` (pełny gate)
+- [x] 4.1 `phpstan analyse` — 4773aa8
+- [x] 4.2 `php-cs-fixer fix --dry-run` — 4773aa8
+- [x] 4.3 `phpunit` (pełny gate) — 4773aa8
 
 #### Manual
 
-- [x] 4.4 Przegląd wyniku `phpunit` pod kątem `failOnDeprecation`/`failOnNotice`
+- [x] 4.4 Przegląd wyniku `phpunit` pod kątem `failOnDeprecation`/`failOnNotice` — 4773aa8
