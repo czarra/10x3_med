@@ -47,7 +47,7 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 | S-01 | patient-onboarding                | Pacjent zakłada konto, loguje się i ustawia parametry początkowe    | F-01            | FR-001, FR-002, FR-003   | done |
 | S-02 | log-diary-entry                   | Pacjent dodaje wpis do dzienniczka (glikemia + opcjonalne pola)     | S-01            | FR-004, FR-005, FR-006, FR-007 | done |
 | S-03 | insulin-ww-ratio-suggestion       | Pacjent dostaje sugestię skorygowanego przelicznika insulina/WW     | S-02            | FR-009, FR-011, US-01    | done |
-| S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | proposed |
+| S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | done |
 | S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | proposed |
 | S-06 | edit-delete-diary-entry           | Pacjent edytuje/usuwa ostatni wpis (do 24h od utworzenia)            | S-02            | FR-014                   | proposed |
 | S-07 | export-diary-history               | Pacjent eksportuje historię i sugerowane przeliczniki do PDF/CSV     | S-05, S-03      | FR-012                   | proposed |
@@ -198,7 +198,7 @@ odtwarzają.
 - **Risk:** Drugie pierwszorzędowe Kryterium sukcesu, ale nie wybrane jako
   gwiazda przewodnia; bezstanowe (nie wymaga zebrania historii), więc to szybka
   równoległa wygrana zgodna z main_goal (`speed`).
-- **Status:** proposed
+- **Status:** done
 
 ### S-05: Przeglądanie historii wpisów
 
@@ -295,3 +295,4 @@ zarchiwizowana.)
 - **S-02: Pacjent może dodać wpis: poziom glikemii + data/godzina (wymagane), opcjonalnie WW, opcjonalnie dawka insuliny, opcjonalnie intensywność i czas wysiłku fizycznego.** — Archived 2026-08-25 → `context/archive/2026-08-25-log-diary-entry/`. Lesson: —.
 - **F-01: (foundation) Skonfigurowany bundle Security, encja `User` + migracja, hashowanie haseł — bez interfejsu rejestracji/logowania.** — Archived 2026-08-25 → `context/archive/2026-08-24-auth-scaffold/`. Lesson: —.
 - **S-03: Po min. 3 kompletnych wpisach posiłkowych system sugeruje skorygowany przelicznik insulina/WW, z widocznym zastrzeżeniem medycznym, wymagający ręcznej akceptacji pacjenta.** — Archived 2026-08-26 → `context/archive/2026-08-25-insulin-ww-ratio-suggestion/`. Lesson: —.
+- **S-04: Pacjent wprowadzający planowany lub wykonany wysiłek fizyczny otrzymuje natychmiastowe ostrzeżenie o ryzyku hipoglikemii (bez sugerowania konkretnej redukcji dawki), z widocznym zastrzeżeniem medycznym.** — Archived 2026-08-26 → `context/archive/2026-08-26-activity-hypoglycemia-warning/`. Lesson: —.
