@@ -474,22 +474,22 @@ Both migrations in this plan (Phase 1's type conversion, Phase 2's new tables) m
 
 #### Automated
 
-- [x] 1.1 Migration applies cleanly on dev and test DBs
-- [x] 1.2 phpstan passes
-- [x] 1.3 php-cs-fixer dry-run passes
-- [x] 1.4 Full existing test suite passes with zero deprecation failures
+- [x] 1.1 Migration applies cleanly on dev and test DBs — 49d22b1
+- [x] 1.2 phpstan passes — 49d22b1
+- [x] 1.3 php-cs-fixer dry-run passes — 49d22b1
+- [x] 1.4 Full existing test suite passes with zero deprecation failures — 49d22b1
 
 #### Manual
 
-- [x] 1.5 `/profil` form only accepts whole numbers for base dose
+- [x] 1.5 `/profil` form only accepts whole numbers for base dose — 49d22b1
 
 ### Phase 2: History entities, repositories, migration
 
 #### Automated
 
-- [ ] 2.1 Migration applies cleanly on dev and test DBs
-- [ ] 2.2 phpstan passes
-- [ ] 2.3 php-cs-fixer dry-run passes
+- [x] 2.1 Migration applies cleanly on dev and test DBs
+- [x] 2.2 phpstan passes
+- [x] 2.3 php-cs-fixer dry-run passes
 
 ### Phase 3: DiaryEntryRepository query addition
 
