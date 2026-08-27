@@ -269,14 +269,14 @@ None — no schema changes anywhere in this plan.
 
 #### Manual
 
-- [x] 1.5 Boundary-matrix test cases reviewed against the finalized rule
+- [x] 1.5 Boundary-matrix test cases reviewed against the finalized rule — f04efe8
 
 ### Phase 2: Edit flow
 
 #### Automated
 
-- [ ] 2.1 DiaryControllerTest edit cases pass (happy path, cross-user 404, expired 404, validation re-render)
-- [ ] 2.2 phpstan analyse passes
+- [x] 2.1 DiaryControllerTest edit cases pass (happy path, cross-user 404, expired 404, validation re-render)
+- [x] 2.2 phpstan analyse passes
 
 #### Manual
 

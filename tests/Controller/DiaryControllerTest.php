@@ -296,7 +296,112 @@ class DiaryControllerTest extends WebTestCase
         }
     }
 
-    private function createEntry(EntityManagerInterface $entityManager, User $user, int $glycemiaMgDl, \DateTimeImmutable $measuredAt): DiaryEntry
+    public function testEditHappyPathPrefillsFormAndPersistsChanges(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 110, new \DateTimeImmutable('-1 hour'));
+
+        try {
+            $client->loginUser($user);
+            $crawler = $client->request('GET', sprintf('/dziennik/%d/edytuj', $entry->getId()));
+
+            $this->assertResponseIsSuccessful();
+            $this->assertFormValue('main > form', 'diary_entry_form[glycemiaMgDl]', '110');
+
+            $form = $crawler->filter('main > form')->form();
+            $form->setValues([
+                'diary_entry_form[glycemiaMgDl]' => '130',
+                'diary_entry_form[measuredAt]' => $entry->getMeasuredAt()->format('Y-m-d\TH:i'),
+            ]);
+            $client->submit($form);
+
+            $this->assertResponseRedirects('/dziennik/historia');
+            $client->followRedirect();
+            $this->assertSelectorTextContains('main', 'Wpis został zaktualizowany.');
+
+            $entityManager->clear();
+            $updated = $entityManager->getRepository(DiaryEntry::class)->find($entry->getId());
+            $this->assertNotNull($updated);
+            $this->assertSame(130, $updated->getGlycemiaMgDl());
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testEditReturns404ForAnotherUsersEntry(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $owner = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $owner, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $owner, 110, new \DateTimeImmutable('-1 hour'));
+
+        $otherUser = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $otherUser, 15, 1.5);
+
+        try {
+            $client->loginUser($otherUser);
+            $client->request('GET', sprintf('/dziennik/%d/edytuj', $entry->getId()));
+
+            $this->assertResponseStatusCodeSame(404);
+        } finally {
+            $this->cleanupUser($entityManager, $owner);
+            $this->cleanupUser($entityManager, $otherUser);
+        }
+    }
+
+    public function testEditReturns404ForEntryOutsideEditableWindow(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 110, new \DateTimeImmutable('-25 hours'), new \DateTimeImmutable('-25 hours'));
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', sprintf('/dziennik/%d/edytuj', $entry->getId()));
+
+            $this->assertResponseStatusCodeSame(404);
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testEditInvalidGlucoseReRendersFormWithout422AndWithoutPersisting(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 110, new \DateTimeImmutable('-1 hour'));
+
+        try {
+            $client->loginUser($user);
+            $crawler = $client->request('GET', sprintf('/dziennik/%d/edytuj', $entry->getId()));
+
+            $form = $crawler->filter('main > form')->form();
+            $form->setValues([
+                'diary_entry_form[glycemiaMgDl]' => '20',
+                'diary_entry_form[measuredAt]' => $entry->getMeasuredAt()->format('Y-m-d\TH:i'),
+            ]);
+            $client->submit($form);
+
+            $this->assertResponseStatusCodeSame(422);
+
+            $entityManager->clear();
+            $unchanged = $entityManager->getRepository(DiaryEntry::class)->find($entry->getId());
+            $this->assertNotNull($unchanged);
+            $this->assertSame(110, $unchanged->getGlycemiaMgDl());
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    private function createEntry(EntityManagerInterface $entityManager, User $user, int $glycemiaMgDl, \DateTimeImmutable $measuredAt, ?\DateTimeImmutable $createdAt = null): DiaryEntry
     {
         $entry = new DiaryEntry(
             user: $user,
@@ -305,10 +410,20 @@ class DiaryControllerTest extends WebTestCase
             insulinWwRatioSnapshot: 1.0,
             baseDoseSnapshot: 10,
         );
+
+        if (null !== $createdAt) {
+            $this->backdateCreatedAt($entry, $createdAt);
+        }
+
         $entityManager->persist($entry);
         $entityManager->flush();
 
         return $entry;
+    }
+
+    private function backdateCreatedAt(DiaryEntry $entry, \DateTimeImmutable $createdAt): void
+    {
+        (new \ReflectionProperty(DiaryEntry::class, 'createdAt'))->setValue($entry, $createdAt);
     }
 
     private function entityManager(): EntityManagerInterface

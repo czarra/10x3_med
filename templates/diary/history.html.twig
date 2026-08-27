@@ -9,6 +9,10 @@
 {% block body %}
     <h1>Historia wpisów</h1>
 
+    {% for message in app.flashes('success') %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
     {% if not historyPage.hasEntries %}
         <article>
             <p>Brak wpisów w dzienniczku.</p>

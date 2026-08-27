@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\DiaryEntry;
 use App\Entity\User;
 use App\Form\DiaryEntryFormType;
+use App\Repository\DiaryEntryRepository;
 use App\Repository\PatientProfileRepository;
+use App\Security\DiaryEntryVoter;
 use App\Service\Chart\GlucoseHistoryChartService;
 use App\Service\History\DiaryHistoryService;
 use App\Service\Warning\HypoglycemiaWarningService;
@@ -54,6 +56,34 @@ class DiaryController extends AbstractController
         }
 
         return $this->render('diary/new.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/dziennik/{id}/edytuj', name: 'diary_entry_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(int $id, Request $request, DiaryEntryRepository $diaryEntryRepository, EntityManagerInterface $entityManager): Response
+    {
+        $entry = $diaryEntryRepository->find($id);
+        if (null === $entry) {
+            throw $this->createNotFoundException('Diary entry not found.');
+        }
+
+        if (!$this->isGranted(DiaryEntryVoter::EDIT, $entry)) {
+            throw $this->createNotFoundException('Diary entry not found.');
+        }
+
+        $form = $this->createForm(DiaryEntryFormType::class, $entry);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Wpis został zaktualizowany.');
+
+            return $this->redirectToRoute('diary_entry_history');
+        }
+
+        return $this->render('diary/edit.html.twig', [
             'form' => $form,
         ]);
     }
