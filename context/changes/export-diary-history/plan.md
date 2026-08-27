@@ -191,8 +191,8 @@ Nie dotyczy — brak zmian w schemacie bazy danych.
 
 #### Automated
 
-- [x] 2.1 phpunit przechodzi (test linku eksportu z poprawnym `page`)
-- [x] 2.2 php-cs-fixer fix --dry-run przechodzi
+- [x] 2.1 phpunit przechodzi (test linku eksportu z poprawnym `page`) — 9acaec4
+- [x] 2.2 php-cs-fixer fix --dry-run przechodzi — 9acaec4
 
 #### Manual
 
