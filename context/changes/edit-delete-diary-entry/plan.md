@@ -262,14 +262,14 @@ None — no schema changes anywhere in this plan.
 
 #### Automated
 
-- [x] 1.1 DiaryEntryEditabilityServiceTest passes
-- [x] 1.2 DiaryEntryVoterTest passes
-- [x] 1.3 phpstan analyse passes
-- [x] 1.4 Full suite green
+- [x] 1.1 DiaryEntryEditabilityServiceTest passes — e410b10
+- [x] 1.2 DiaryEntryVoterTest passes — e410b10
+- [x] 1.3 phpstan analyse passes — e410b10
+- [x] 1.4 Full suite green — e410b10
 
 #### Manual
 
-- [ ] 1.5 Boundary-matrix test cases reviewed against the finalized rule
+- [x] 1.5 Boundary-matrix test cases reviewed against the finalized rule
 
 ### Phase 2: Edit flow
 
