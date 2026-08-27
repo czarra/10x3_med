@@ -9,12 +9,14 @@ use App\Repository\DiaryEntryRepository;
 use App\Repository\PatientProfileRepository;
 use App\Security\DiaryEntryVoter;
 use App\Service\Chart\GlucoseHistoryChartService;
+use App\Service\Export\DiaryExportService;
 use App\Service\History\DiaryHistoryService;
 use App\Service\Warning\HypoglycemiaWarningService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -127,5 +129,30 @@ class DiaryController extends AbstractController
             'historyPage' => $historyPage,
             'chart' => $chart,
         ]);
+    }
+
+    #[Route('/dziennik/eksport', name: 'diary_entry_export', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function export(Request $request, DiaryHistoryService $diaryHistoryService, DiaryExportService $diaryExportService): StreamedResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $page = max(1, $request->query->getInt('page', 1));
+        $historyPage = $diaryHistoryService->buildPage($user, $page);
+
+        $response = new StreamedResponse(function () use ($historyPage, $diaryExportService): void {
+            $handle = fopen('php://output', 'w');
+            $diaryExportService->writeCsv($historyPage, $handle);
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+            'attachment',
+            sprintf('dziennik-eksport-strona-%d-%s.csv', $historyPage->currentPage, (new \DateTimeImmutable())->format('Y-m-d')),
+        ));
+
+        return $response;
     }
 }

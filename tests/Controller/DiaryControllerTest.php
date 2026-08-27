@@ -561,6 +561,156 @@ class DiaryControllerTest extends WebTestCase
         }
     }
 
+    public function testExportReturnsCsvForCurrentPageWithHeaderAndDataRows(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $this->createEntry($entityManager, $user, 120, new \DateTimeImmutable('-1 hour'));
+
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/eksport?page=1');
+
+            $this->assertResponseIsSuccessful();
+            $this->assertStringContainsString('text/csv', (string) $client->getResponse()->headers->get('Content-Type'));
+            $this->assertStringContainsString('attachment', (string) $client->getResponse()->headers->get('Content-Disposition'));
+            $this->assertStringContainsString('dziennik-eksport-strona-1-', (string) $client->getResponse()->headers->get('Content-Disposition'));
+
+            $rows = $this->parseCsvRows($this->streamedContent($client));
+            $this->assertSame([
+                'Data i godzina',
+                'Glikemia (mg/dL)',
+                'WW',
+                'Insulina (j.)',
+                'Intensywność aktywności',
+                'Czas aktywności (min)',
+            ], $rows[0]);
+            $this->assertSame('120', $rows[1][1]);
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testExportOnlyIncludesRequestingUsersEntries(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $otherUser = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $otherUser, 15, 1.5);
+
+        try {
+            $this->createEntry($entityManager, $user, 111, new \DateTimeImmutable('-1 hour'));
+            $this->createEntry($entityManager, $otherUser, 999, new \DateTimeImmutable('-1 hour'));
+
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/eksport?page=1');
+
+            $this->assertResponseIsSuccessful();
+            $glycemiaValues = array_column(array_slice($this->parseCsvRows($this->streamedContent($client)), 1), 1);
+            $this->assertContains('111', $glycemiaValues);
+            $this->assertNotContains('999', $glycemiaValues);
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+            $this->cleanupUser($entityManager, $otherUser);
+        }
+    }
+
+    public function testExportProfilelessAuthenticatedUserIsRedirectedToOnboarding(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/eksport');
+
+            $this->assertResponseRedirects('/onboarding');
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testExportRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/dziennik/eksport');
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function testExportWithNoEntriesReturnsHeaderOnlyCsv(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/eksport?page=1');
+
+            $this->assertResponseIsSuccessful();
+            $rows = $this->parseCsvRows($this->streamedContent($client));
+            $this->assertCount(1, $rows);
+            $this->assertSame([
+                'Data i godzina',
+                'Glikemia (mg/dL)',
+                'WW',
+                'Insulina (j.)',
+                'Intensywność aktywności',
+                'Czas aktywności (min)',
+            ], $rows[0]);
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testHistoryShowsExportButtonLinkingToCurrentPage(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+
+        try {
+            $base = new \DateTimeImmutable('-9 days');
+            for ($i = 0; $i < 9; ++$i) {
+                $this->createEntry($entityManager, $user, 100, $base->modify('+'.$i.' days'));
+            }
+
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/historia?page=2');
+
+            $this->assertResponseIsSuccessful();
+            $link = $crawler->selectLink('Eksportuj tę stronę (CSV)')->link();
+            $this->assertStringContainsString('/dziennik/eksport?page=2', $link->getUri());
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    private function streamedContent(KernelBrowser $client): string
+    {
+        return $client->getInternalResponse()->getContent();
+    }
+
+    /**
+     * @return list<list<string>>
+     */
+    private function parseCsvRows(string $csv): array
+    {
+        $csv = str_starts_with($csv, "\xEF\xBB\xBF") ? substr($csv, 3) : $csv;
+        $lines = array_filter(explode("\n", $csv), static fn (string $line): bool => '' !== $line);
+
+        return array_values(array_map(static fn (string $line) => str_getcsv($line, ';', '"', ''), $lines));
+    }
+
     private function csrfToken(string $intention, KernelBrowser $client): string
     {
         $requestStack = static::getContainer()->get(RequestStack::class);
