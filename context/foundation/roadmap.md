@@ -50,7 +50,7 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 | S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | done |
 | S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | done |
 | S-06 | edit-delete-diary-entry           | Pacjent edytuje/usuwa ostatni wpis (do 24h od utworzenia)            | S-02            | FR-014                   | done |
-| S-07 | export-diary-history               | Pacjent eksportuje historię wpisów dziennika do CSV (bieżąca strona) | S-05            | FR-012 (częściowo)       | in-progress |
+| S-07 | export-diary-history               | Pacjent eksportuje historię wpisów dziennika do CSV (bieżąca strona) | S-05            | FR-012 (częściowo)       | done |
 | S-07b | export-ratio-history-pdf          | Pacjent eksportuje sugerowane przeliczniki (ratio/base-dose) do PDF/CSV | S-03, S-07   | FR-012 (reszta)          | backlog  |
 
 ## Streams
@@ -247,7 +247,7 @@ odtwarzają.
 - **Risk:** Głównie zadanie serializacji/raportowania, bez nowego ryzyka
   domenowego. Świadome zawężenie zakresu względem pełnego FR-012 — patrz
   S-07b.
-- **Status:** in-progress
+- **Status:** done
 
 ### S-07b: Eksport historii przeliczników do PDF/CSV
 
@@ -317,3 +317,4 @@ zarchiwizowana.)
 - **S-04: Pacjent wprowadzający planowany lub wykonany wysiłek fizyczny otrzymuje natychmiastowe ostrzeżenie o ryzyku hipoglikemii (bez sugerowania konkretnej redukcji dawki), z widocznym zastrzeżeniem medycznym.** — Archived 2026-08-26 → `context/archive/2026-08-26-activity-hypoglycemia-warning/`. Lesson: —.
 - **S-05: Pacjent może przeglądać listę historycznych wpisów pogrupowaną wg dni (ze stronicowaniem/leniwym ładowaniem) oraz wykres z ostatnich 7 dni z wyróżnionymi strefami (hipoglikemia, norma, hiperglikemia).** — Archived 2026-08-26 → `context/archive/2026-08-26-diary-history-view/`. Lesson: —.
 - **S-06: Pacjent może edytować lub usunąć wpis dodany w ciągu ostatnich 24h od utworzenia; starsze wpisy pozostają zablokowane do edycji.** — Archived 2026-08-27 → `context/archive/2026-08-27-edit-delete-diary-entry/`. Lesson: —.
+- **S-07: Pacjent może wyeksportować do CSV bieżąco przeglądaną stronę historii swoich pomiarów, w celu udostępnienia jej lekarzowi. Pierwszy, zawężony slice FR-012 — nie obejmuje eksportu sugerowanych przeliczników ani formatu PDF; ta reszta zakresu jest śledzona jako S-07b.** — Archived 2026-08-27 → `context/archive/2026-08-27-export-diary-history/`. Lesson: —.
