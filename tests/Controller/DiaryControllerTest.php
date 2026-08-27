@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 use App\Entity\ActivityIntensity;
 use App\Entity\DiaryEntry;
 use App\Entity\PatientProfile;
+use App\Entity\RatioAdjustmentHistory;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -506,6 +507,60 @@ class DiaryControllerTest extends WebTestCase
         }
     }
 
+    public function testHistoryShowsControlsForFreshEntryAndHidesForExpiredEntry(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $this->createEntry($entityManager, $user, 111, new \DateTimeImmutable('-1 hour'));
+        $this->createEntry($entityManager, $user, 222, new \DateTimeImmutable('-25 hours'), new \DateTimeImmutable('-25 hours'));
+
+        try {
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseIsSuccessful();
+
+            $freshRow = $crawler->filter('tr:contains("111")');
+            $this->assertSame(1, $freshRow->count());
+            $this->assertStringContainsString('Edytuj', $freshRow->text());
+            $this->assertStringContainsString('Usuń', $freshRow->text());
+
+            $expiredRow = $crawler->filter('tr:contains("222")');
+            $this->assertSame(1, $expiredRow->count());
+            $this->assertStringNotContainsString('Edytuj', $expiredRow->text());
+            $this->assertStringNotContainsString('Usuń', $expiredRow->text());
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testHistoryHidesControlsForEntryConsumedByAcceptedRatioSuggestion(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 333, new \DateTimeImmutable('-2 hours'));
+        $entityManager->persist(new RatioAdjustmentHistory($user, 1.5, 1.6, new \DateTimeImmutable('-1 hour')));
+        $entityManager->flush();
+
+        try {
+            $client->loginUser($user);
+            $crawler = $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseIsSuccessful();
+
+            $row = $crawler->filter('tr:contains("333")');
+            $this->assertSame(1, $row->count());
+            $this->assertStringNotContainsString('Edytuj', $row->text());
+            $this->assertStringNotContainsString('Usuń', $row->text());
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
     private function csrfToken(string $intention, KernelBrowser $client): string
     {
         $requestStack = static::getContainer()->get(RequestStack::class);
@@ -574,6 +629,8 @@ class DiaryControllerTest extends WebTestCase
     private function cleanupUser(EntityManagerInterface $entityManager, User $user): void
     {
         $connection = $entityManager->getConnection();
+        $connection->executeStatement('DELETE FROM ratio_adjustment_histories WHERE user_id = ?', [$user->getId()]);
+        $connection->executeStatement('DELETE FROM base_dose_adjustment_histories WHERE user_id = ?', [$user->getId()]);
         $connection->executeStatement('DELETE FROM diary_entries WHERE user_id = ?', [$user->getId()]);
         $connection->executeStatement('DELETE FROM patient_profiles WHERE user_id = ?', [$user->getId()]);
         $connection->executeStatement('DELETE FROM users WHERE id = ?', [$user->getId()]);

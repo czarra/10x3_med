@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="/css/diary-chart.css">
+    <link rel="stylesheet" href="/css/diary-history-actions.css">
 {% endblock %}
 
 {% block body %}
@@ -53,6 +54,7 @@
                             <th>WW</th>
                             <th>Insulina (j.)</th>
                             <th>Aktywność</th>
+                            <th>Akcje</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,6 +69,17 @@
                                         {{ entry.activityIntensity.value }}, {{ entry.activityDurationMinutes }} min
                                     {% else %}
                                         —
+                                    {% endif %}
+                                </td>
+                                <td class="entry-actions">
+                                    {% if is_granted('DIARY_ENTRY_EDIT', entry) %}
+                                        <a href="{{ path('diary_entry_edit', {id: entry.id}) }}" role="button" class="entry-action-edit">Edytuj</a>
+                                    {% endif %}
+                                    {% if is_granted('DIARY_ENTRY_DELETE', entry) %}
+                                        <form method="post" action="{{ path('diary_entry_delete', {id: entry.id}) }}" onsubmit="return confirm('Czy na pewno usunąć ten wpis?')">
+                                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_diary_entry') }}">
+                                            <button type="submit" class="entry-action-delete">Usuń</button>
+                                        </form>
                                     {% endif %}
                                 </td>
                             </tr>

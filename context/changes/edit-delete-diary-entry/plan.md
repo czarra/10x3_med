@@ -287,23 +287,23 @@ None — no schema changes anywhere in this plan.
 
 #### Automated
 
-- [x] 3.1 DiaryControllerTest delete cases pass (happy path, cross-user/expired 404, CSRF 403)
-- [x] 3.2 phpstan analyse passes
+- [x] 3.1 DiaryControllerTest delete cases pass (happy path, cross-user/expired 404, CSRF 403) — 59f8971
+- [x] 3.2 phpstan analyse passes — 59f8971
 
 #### Manual
 
-- [ ] 3.3 Direct POST delete removes row and shows flash
+- [x] 3.3 Direct POST delete removes row and shows flash
 
 ### Phase 4: History view integration
 
 #### Automated
 
-- [ ] 4.1 History row visibility test (editable vs locked) passes
-- [ ] 4.2 Full suite green
-- [ ] 4.3 phpstan analyse and php-cs-fixer --dry-run pass
+- [x] 4.1 History row visibility test (editable vs locked) passes
+- [x] 4.2 Full suite green
+- [x] 4.3 phpstan analyse and php-cs-fixer --dry-run pass
 
 #### Manual
 
-- [ ] 4.4 Full end-to-end browser walkthrough (create, edit, delete)
-- [ ] 4.5 Suggestion-acceptance cutoff hides actions on an otherwise-fresh entry
-- [ ] 4.6 Entry older than 24h shows no actions
+- [x] 4.4 Full end-to-end browser walkthrough (create, edit, delete)
+- [x] 4.5 Suggestion-acceptance cutoff hides actions on an otherwise-fresh entry
+- [x] 4.6 Entry older than 24h shows no actions
