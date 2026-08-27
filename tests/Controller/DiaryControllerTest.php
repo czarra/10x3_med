@@ -7,7 +7,10 @@ use App\Entity\DiaryEntry;
 use App\Entity\PatientProfile;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class DiaryControllerTest extends WebTestCase
 {
@@ -398,6 +401,123 @@ class DiaryControllerTest extends WebTestCase
             $this->assertSame(110, $unchanged->getGlycemiaMgDl());
         } finally {
             $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testDeleteHappyPathRemovesEntryAndRedirectsWithFlash(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 110, new \DateTimeImmutable('-1 hour'));
+        $entryId = $entry->getId();
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/historia');
+            $client->request('POST', sprintf('/dziennik/%d/usun', $entryId), [
+                '_csrf_token' => $this->csrfToken('delete_diary_entry', $client),
+            ]);
+
+            $this->assertResponseRedirects('/dziennik/historia');
+            $client->followRedirect();
+            $this->assertSelectorTextContains('main', 'Wpis został usunięty.');
+
+            $entityManager->clear();
+            $this->assertNull($entityManager->getRepository(DiaryEntry::class)->find($entryId));
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testDeleteReturns404ForAnotherUsersEntry(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $owner = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $owner, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $owner, 110, new \DateTimeImmutable('-1 hour'));
+
+        $otherUser = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $otherUser, 15, 1.5);
+
+        try {
+            $client->loginUser($otherUser);
+            $client->request('GET', '/dziennik/historia');
+            $client->request('POST', sprintf('/dziennik/%d/usun', $entry->getId()), [
+                '_csrf_token' => $this->csrfToken('delete_diary_entry', $client),
+            ]);
+
+            $this->assertResponseStatusCodeSame(404);
+
+            $entityManager->clear();
+            $this->assertNotNull($entityManager->getRepository(DiaryEntry::class)->find($entry->getId()));
+        } finally {
+            $this->cleanupUser($entityManager, $owner);
+            $this->cleanupUser($entityManager, $otherUser);
+        }
+    }
+
+    public function testDeleteReturns404ForEntryOutsideEditableWindow(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 110, new \DateTimeImmutable('-25 hours'), new \DateTimeImmutable('-25 hours'));
+
+        try {
+            $client->loginUser($user);
+            $client->request('GET', '/dziennik/historia');
+            $client->request('POST', sprintf('/dziennik/%d/usun', $entry->getId()), [
+                '_csrf_token' => $this->csrfToken('delete_diary_entry', $client),
+            ]);
+
+            $this->assertResponseStatusCodeSame(404);
+
+            $entityManager->clear();
+            $this->assertNotNull($entityManager->getRepository(DiaryEntry::class)->find($entry->getId()));
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    public function testDeleteWithInvalidCsrfTokenIsRejected(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $user = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $user, 15, 1.5);
+        $entry = $this->createEntry($entityManager, $user, 110, new \DateTimeImmutable('-1 hour'));
+
+        try {
+            $client->loginUser($user);
+            $client->request('POST', sprintf('/dziennik/%d/usun', $entry->getId()), [
+                '_csrf_token' => 'invalid-token',
+            ]);
+
+            $this->assertResponseStatusCodeSame(403);
+
+            $entityManager->clear();
+            $this->assertNotNull($entityManager->getRepository(DiaryEntry::class)->find($entry->getId()));
+        } finally {
+            $this->cleanupUser($entityManager, $user);
+        }
+    }
+
+    private function csrfToken(string $intention, KernelBrowser $client): string
+    {
+        $requestStack = static::getContainer()->get(RequestStack::class);
+        $requestStack->push($client->getRequest());
+
+        try {
+            $token = static::getContainer()->get(CsrfTokenManagerInterface::class)->getToken($intention)->getValue();
+            $client->getRequest()->getSession()->save();
+
+            return $token;
+        } finally {
+            $requestStack->pop();
         }
     }
 

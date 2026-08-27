@@ -275,20 +275,20 @@ None — no schema changes anywhere in this plan.
 
 #### Automated
 
-- [x] 2.1 DiaryControllerTest edit cases pass (happy path, cross-user 404, expired 404, validation re-render)
-- [x] 2.2 phpstan analyse passes
+- [x] 2.1 DiaryControllerTest edit cases pass (happy path, cross-user 404, expired 404, validation re-render) — 22d5af0
+- [x] 2.2 phpstan analyse passes — 22d5af0
 
 #### Manual
 
-- [ ] 2.3 Browser walkthrough: create, edit, verify updated value + flash
-- [ ] 2.4 Manual 404 check on another user's entry id
+- [x] 2.3 Browser walkthrough: create, edit, verify updated value + flash — 22d5af0
+- [x] 2.4 Manual 404 check on another user's entry id — 22d5af0
 
 ### Phase 3: Delete flow
 
 #### Automated
 
-- [ ] 3.1 DiaryControllerTest delete cases pass (happy path, cross-user/expired 404, CSRF 403)
-- [ ] 3.2 phpstan analyse passes
+- [x] 3.1 DiaryControllerTest delete cases pass (happy path, cross-user/expired 404, CSRF 403)
+- [x] 3.2 phpstan analyse passes
 
 #### Manual
 

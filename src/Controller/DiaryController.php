@@ -88,6 +88,30 @@ class DiaryController extends AbstractController
         ]);
     }
 
+    #[Route('/dziennik/{id}/usun', name: 'diary_entry_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(int $id, Request $request, DiaryEntryRepository $diaryEntryRepository, EntityManagerInterface $entityManager): Response
+    {
+        $entry = $diaryEntryRepository->find($id);
+        if (null === $entry) {
+            throw $this->createNotFoundException('Diary entry not found.');
+        }
+
+        if (!$this->isGranted(DiaryEntryVoter::DELETE, $entry)) {
+            throw $this->createNotFoundException('Diary entry not found.');
+        }
+
+        if (!$this->isCsrfTokenValid('delete_diary_entry', (string) $request->request->get('_csrf_token'))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $entityManager->remove($entry);
+        $entityManager->flush();
+        $this->addFlash('success', 'Wpis został usunięty.');
+
+        return $this->redirectToRoute('diary_entry_history');
+    }
+
     #[Route('/dziennik/historia', name: 'diary_entry_history', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function history(Request $request, DiaryHistoryService $diaryHistoryService, GlucoseHistoryChartService $glucoseHistoryChartService): Response
