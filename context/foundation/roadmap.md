@@ -50,7 +50,8 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 | S-04 | activity-hypoglycemia-warning     | Pacjent dostaje ostrzeżenie o ryzyku hipoglikemii przy wysiłku      | S-02            | FR-010, FR-011           | done |
 | S-05 | diary-history-view                | Pacjent przegląda historię wpisów (lista + wykres 7 dni)            | S-02            | FR-008                   | done |
 | S-06 | edit-delete-diary-entry           | Pacjent edytuje/usuwa ostatni wpis (do 24h od utworzenia)            | S-02            | FR-014                   | done |
-| S-07 | export-diary-history               | Pacjent eksportuje historię i sugerowane przeliczniki do PDF/CSV     | S-05, S-03      | FR-012                   | proposed |
+| S-07 | export-diary-history               | Pacjent eksportuje historię wpisów dziennika do CSV (bieżąca strona) | S-05            | FR-012 (częściowo)       | in-progress |
+| S-07b | export-ratio-history-pdf          | Pacjent eksportuje sugerowane przeliczniki (ratio/base-dose) do PDF/CSV | S-03, S-07   | FR-012 (reszta)          | backlog  |
 
 ## Streams
 
@@ -63,7 +64,7 @@ kolejność czytania między równoległymi ścieżkami.
 | A      | Wejście i dane                       | `F-01` → `S-01` → `S-02`                          | Ścieżka obowiązkowa — nic innego nie da się zademonstrować bez niej.     |
 | B      | Silnik rekomendacji (gwiazda)        | `S-02` → `S-03`                                    | North star; najkrótsza droga do zwalidowania kluczowej hipotezy.        |
 | C      | Bezpieczeństwo wysiłku                | `S-02` → `S-04`                                    | Drugie pierwszorzędowe Kryterium sukcesu; bezstanowe, szybkie do zweryfikowania. |
-| D      | Przegląd, korekta i eksport          | `S-02` → `S-05` → `S-06` / `S-07` (dołącza do Stream B przy `S-03`) | Wspólna powierzchnia "zarządzania własnymi danymi".                    |
+| D      | Przegląd, korekta i eksport          | `S-02` → `S-05` → `S-06` / `S-07` → `S-07b` (dołącza do Stream B przy `S-03`) | Wspólna powierzchnia "zarządzania własnymi danymi".                    |
 | E      | Wdrożenie                             | `F-02`                                              | Niezależne od reszty; musi wylądować przed 2026-09-07 niezależnie od postępu funkcji. |
 
 ## Baseline
@@ -230,22 +231,39 @@ odtwarzają.
   zrównoleglenia, nic innego od niego nie zależy.
 - **Status:** done
 
-### S-07: Eksport historii do PDF/CSV
+### S-07: Eksport historii wpisów do CSV
 
-- **Outcome:** Pacjent może wyeksportować historię swoich pomiarów i
-  sugerowanych przeliczników do pliku PDF lub CSV w celu udostępnienia jej
-  lekarzowi.
+- **Outcome:** Pacjent może wyeksportować do CSV bieżąco przeglądaną stronę
+  historii swoich pomiarów, w celu udostępnienia jej lekarzowi. Pierwszy,
+  zawężony slice FR-012 — nie obejmuje eksportu sugerowanych przeliczników
+  ani formatu PDF; ta reszta zakresu jest śledzona jako **S-07b**.
 - **Change ID:** export-diary-history
-- **PRD refs:** FR-012
-- **Prerequisites:** S-05, S-03 (potrzebuje zarówno widoku historii, jak i
-  danych o sugerowanych przelicznikach)
+- **PRD refs:** FR-012 (częściowo — patrz S-07b dla reszty)
+- **Prerequisites:** S-05 (potrzebuje widoku historii; świadomie nie czeka
+  już na S-03, bo ten slice nie eksportuje danych o przelicznikach)
 - **Parallel with:** S-04, S-06
 - **Blockers:** —
 - **Unknowns:** —
-- **Risk:** Ostatni element ścieżki must-have; naturalnie na końcu, bo pakuje
-  dane wyjściowe z S-03 i S-05 — głównie zadanie serializacji/raportowania, bez
-  nowego ryzyka domenowego.
-- **Status:** proposed
+- **Risk:** Głównie zadanie serializacji/raportowania, bez nowego ryzyka
+  domenowego. Świadome zawężenie zakresu względem pełnego FR-012 — patrz
+  S-07b.
+- **Status:** in-progress
+
+### S-07b: Eksport historii przeliczników do PDF/CSV
+
+- **Outcome:** Pacjent może wyeksportować historię sugerowanych przeliczników
+  (ratio/base-dose adjustment history) do pliku PDF lub CSV, uzupełniając
+  eksport z S-07 o resztę zakresu FR-012.
+- **Change ID:** export-ratio-history-pdf
+- **PRD refs:** FR-012 (reszta — patrz S-07)
+- **Prerequisites:** S-03 (dane o sugerowanych przelicznikach), S-07 (bazowy
+  eksport CSV/wzorzec serwisu eksportu)
+- **Parallel with:** —
+- **Blockers:** —
+- **Unknowns:** Format PDF (biblioteka, layout) nie był jeszcze researchowany.
+- **Risk:** Nowy typ eksportu (PDF) — potencjalnie wymaga nowej zależności
+  composera; do zweryfikowania w `/10x-research`.
+- **Status:** backlog
 
 ## Backlog Handoff
 
@@ -259,7 +277,8 @@ odtwarzają.
 | S-04       | activity-hypoglycemia-warning    | Ostrzeżenie o ryzyku hipoglikemii przy wysiłku                          | no                      | Czeka na S-02 |
 | S-05       | diary-history-view               | Widok historii wpisów (lista + wykres 7 dni)                            | no                      | Czeka na S-02 |
 | S-06       | edit-delete-diary-entry          | Edycja/usunięcie ostatniego wpisu                                       | no                      | Czeka na S-02 |
-| S-07       | export-diary-history              | Eksport historii do PDF/CSV                                             | no                      | Czeka na S-05, S-03 |
+| S-07       | export-diary-history              | Eksport historii wpisów do CSV                                          | yes                     | Plan już przejrzany (`plan_reviewed`) |
+| S-07b      | export-ratio-history-pdf          | Eksport historii przeliczników do PDF/CSV                               | no                      | Czeka na S-07; format PDF do researchu |
 
 ## Open Roadmap Questions
 
