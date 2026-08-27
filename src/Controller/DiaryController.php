@@ -143,8 +143,11 @@ class DiaryController extends AbstractController
 
         $response = new StreamedResponse(function () use ($historyPage, $diaryExportService): void {
             $handle = fopen('php://output', 'w');
-            $diaryExportService->writeCsv($historyPage, $handle);
-            fclose($handle);
+            try {
+                $diaryExportService->writeCsv($historyPage, $handle);
+            } finally {
+                fclose($handle);
+            }
         });
 
         $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
