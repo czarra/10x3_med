@@ -204,6 +204,10 @@ Wire the Edit/Delete affordances into `templates/diary/history.html.twig`, gated
 
 **Contract**: New `<th>Akcje</th>` in the table head. Per row, wrap an "Edytuj" link (`{{ path('diary_entry_edit', {id: entry.id}) }}`) and a "Usuń" POST form (hidden `_csrf_token` input via `csrf_token('delete_diary_entry')`, `action="{{ path('diary_entry_delete', {id: entry.id}) }}"`, `onsubmit="return confirm('...')"`) inside `{% if is_granted('DIARY_ENTRY_EDIT', entry) %}` / `{% if is_granted('DIARY_ENTRY_DELETE', entry) %}` respectively (they'll agree in practice today, but each action checks its own attribute — no shortcut to a single combined check). Rows failing both checks render an empty `<td>` (no dead links, no disabled buttons).
 
+**Addendum** (recorded post-implementation, per impl-review F1): a companion stylesheet `public/css/diary-history-actions.css` (new) was added alongside the template change, following the existing `diary-chart.css` per-view-stylesheet convention (linked in the same `{% block stylesheets %}`), to style the new "Edytuj"/"Usuń" action buttons.
+
+**Addendum 2** (recorded post-implementation, per impl-review F2): the template now evaluates `is_granted('DIARY_ENTRY_EDIT', entry)` once per row into a `canManage` variable and reuses it to gate both the Edit link and the Delete form, rather than calling `is_granted()` separately per attribute. This halves the DB lookups `DiaryEntryEditabilityService` runs per fresh row (both attributes resolve identically today, per `DiaryEntryVoter::voteOnAttribute()`). Superseded the original "no shortcut to a single combined check" instruction above — if EDIT/DELETE rules are ever intentionally split in the Voter, this template shortcut must be revisited.
+
 ### Success Criteria:
 
 #### Automated Verification:

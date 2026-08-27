@@ -72,10 +72,11 @@
                                     {% endif %}
                                 </td>
                                 <td class="entry-actions">
-                                    {% if is_granted('DIARY_ENTRY_EDIT', entry) %}
+                                    {% set canManage = is_granted('DIARY_ENTRY_EDIT', entry) %}
+                                    {% if canManage %}
                                         <a href="{{ path('diary_entry_edit', {id: entry.id}) }}" role="button" class="entry-action-edit">Edytuj</a>
                                     {% endif %}
-                                    {% if is_granted('DIARY_ENTRY_DELETE', entry) %}
+                                    {% if canManage %}
                                         <form method="post" action="{{ path('diary_entry_delete', {id: entry.id}) }}" onsubmit="return confirm('Czy na pewno usunąć ten wpis?')">
                                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_diary_entry') }}">
                                             <button type="submit" class="entry-action-delete">Usuń</button>
