@@ -22,7 +22,7 @@ odwrotnie. Nie jest generowane automatycznie — patrz "Odświeżanie" na końcu
 | S-03       | insulin-ww-ratio-suggestion      | [#5](https://github.com/czarra/10x3_med/issues/5)         | slice, north-star     | #4                    | done                 | closed            |
 | S-04       | activity-hypoglycemia-warning    | [#6](https://github.com/czarra/10x3_med/issues/6)         | slice                 | #4                    | done                 | closed            |
 | S-05       | diary-history-view               | [#7](https://github.com/czarra/10x3_med/issues/7)         | slice                 | #4                    | done                 | closed            |
-| S-06       | edit-delete-diary-entry          | [#8](https://github.com/czarra/10x3_med/issues/8)         | slice                 | #4                    | proposed             | open              |
+| S-06       | edit-delete-diary-entry          | [#8](https://github.com/czarra/10x3_med/issues/8)         | slice                 | #4                    | done                 | closed            |
 | S-07       | export-diary-history              | [#9](https://github.com/czarra/10x3_med/issues/9)         | slice                 | #7, #5                | proposed             | open              |
 
 Gwiazda przewodnia (north star) roadmapy: **S-03 → [#5](https://github.com/czarra/10x3_med/issues/5)**.
