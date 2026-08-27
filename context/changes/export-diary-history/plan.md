@@ -178,24 +178,24 @@ Nie dotyczy — brak zmian w schemacie bazy danych.
 
 #### Automated
 
-- [x] 1.1 phpstan analyse przechodzi
-- [x] 1.2 php-cs-fixer fix --dry-run przechodzi
-- [x] 1.3 phpunit przechodzi (nowe testy kontrolera i serwisu eksportu)
+- [x] 1.1 phpstan analyse przechodzi — 12f89b0
+- [x] 1.2 php-cs-fixer fix --dry-run przechodzi — 12f89b0
+- [x] 1.3 phpunit przechodzi (nowe testy kontrolera i serwisu eksportu) — 12f89b0
 
 #### Manual
 
-- [ ] 1.4 Pobranie CSV dla zalogowanego użytkownika z wpisami działa
-- [ ] 1.5 Plik otwiera się poprawnie z separatorem `;` i przecinkiem dziesiętnym
+- [x] 1.4 Pobranie CSV dla zalogowanego użytkownika z wpisami działa
+- [x] 1.5 Plik otwiera się poprawnie z separatorem `;` i przecinkiem dziesiętnym
 
 ### Phase 2: Przycisk eksportu w UI historii
 
 #### Automated
 
-- [ ] 2.1 phpunit przechodzi (test linku eksportu z poprawnym `page`)
-- [ ] 2.2 php-cs-fixer fix --dry-run przechodzi
+- [x] 2.1 phpunit przechodzi (test linku eksportu z poprawnym `page`)
+- [x] 2.2 php-cs-fixer fix --dry-run przechodzi
 
 #### Manual
 
-- [ ] 2.3 Przycisk widoczny i klikalny na stronie historii z wpisami
-- [ ] 2.4 Eksport ze strony 2 zawiera dane strony 2, nie strony 1
-- [ ] 2.5 Pusta historia nie pokazuje przycisku eksportu
+- [x] 2.3 Przycisk widoczny i klikalny na stronie historii z wpisami
+- [x] 2.4 Eksport ze strony 2 zawiera dane strony 2, nie strony 1
+- [x] 2.5 Pusta historia nie pokazuje przycisku eksportu

@@ -102,5 +102,7 @@
                 {% endif %}
             </ul>
         </nav>
+
+        <p><a href="{{ path('diary_entry_export', {page: historyPage.currentPage}) }}" role="button" class="secondary">Eksportuj tę stronę (CSV)</a></p>
     {% endif %}
 {% endblock %}
