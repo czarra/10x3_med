@@ -44,7 +44,7 @@ class ProfileControllerTest extends WebTestCase
         }
     }
 
-    public function testProfileRequiresAuthenticationForFreshAnonymousClient(): void
+    public function testProfileRequiresAuthentication(): void
     {
         $client = static::createClient();
         $client->request('GET', '/profil');
