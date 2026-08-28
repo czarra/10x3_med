@@ -282,26 +282,26 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 1.1 phpunit tests/Controller/DiaryControllerTest.php passes with no regressions
-- [x] 1.2 phpunit tests/Service/Export/DiaryExportServiceTest.php passes with no regressions
-- [x] 1.3 Full phpunit suite passes
-- [x] 1.4 php-cs-fixer dry-run reports no changes needed
+- [x] 1.1 phpunit tests/Controller/DiaryControllerTest.php passes with no regressions — 7acfde0
+- [x] 1.2 phpunit tests/Service/Export/DiaryExportServiceTest.php passes with no regressions — 7acfde0
+- [x] 1.3 Full phpunit suite passes — 7acfde0
+- [x] 1.4 php-cs-fixer dry-run reports no changes needed — 7acfde0
 
 #### Manual
 
-- [ ] 1.5 Diff review confirms no test assertion was weakened or removed during the refactor
+- [x] 1.5 Diff review confirms no test assertion was weakened or removed during the refactor — 7acfde0
 
 ### Phase 2: Risk #1 — `history` Cross-Account Coverage
 
 #### Automated
 
-- [ ] 2.1 phpunit tests/Controller/DiaryControllerTest.php passes including the new test
-- [ ] 2.2 Full phpunit suite passes
-- [ ] 2.3 php-cs-fixer dry-run reports no changes needed
+- [x] 2.1 phpunit tests/Controller/DiaryControllerTest.php passes including the new test
+- [x] 2.2 Full phpunit suite passes
+- [x] 2.3 php-cs-fixer dry-run reports no changes needed
 
 #### Manual
 
-- [ ] 2.4 Breaking the history query's user-scoping makes the new test fail; reverting restores green
+- [x] 2.4 Breaking the history query's user-scoping makes the new test fail; reverting restores green
 
 ### Phase 3: Risk #5 — Unauthenticated-Access Coverage
 

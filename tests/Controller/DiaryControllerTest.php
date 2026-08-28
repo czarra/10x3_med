@@ -299,6 +299,31 @@ class DiaryControllerTest extends WebTestCase
         }
     }
 
+    public function testHistoryDoesNotExposeAnotherUsersEntries(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $userA = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $userA, 15, 1.5);
+        $this->createEntry($entityManager, $userA, 111, new \DateTimeImmutable('-1 hour'));
+
+        $userB = $this->createUser($entityManager);
+        $this->createProfile($entityManager, $userB, 15, 1.5);
+        $this->createEntry($entityManager, $userB, 222, new \DateTimeImmutable('-1 hour'));
+
+        try {
+            $client->loginUser($userB);
+            $client->request('GET', '/dziennik/historia');
+
+            $this->assertResponseIsSuccessful();
+            $this->assertStringContainsString('222', (string) $client->getResponse()->getContent());
+            $this->assertStringNotContainsString('111', (string) $client->getResponse()->getContent());
+        } finally {
+            $this->cleanupUser($entityManager, $userA);
+            $this->cleanupUser($entityManager, $userB);
+        }
+    }
+
     public function testEditHappyPathPrefillsFormAndPersistsChanges(): void
     {
         $client = static::createClient();
