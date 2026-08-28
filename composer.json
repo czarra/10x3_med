@@ -4,11 +4,11 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^3.3",
-        "doctrine/doctrine-migrations-bundle": "^4.0",
+        "doctrine/doctrine-migrations-bundle": "^4.0.1",
         "doctrine/orm": "^3.6",
         "phpdocumentor/reflection-docblock": "^6.0",
         "phpstan/phpdoc-parser": "^2.3",
@@ -81,12 +81,12 @@
         }
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.95",
+        "friendsofphp/php-cs-fixer": "^3.95.23",
         "phpstan/extension-installer": "^1.4",
-        "phpstan/phpstan": "^2.2",
+        "phpstan/phpstan": "^2.2.9",
         "phpstan/phpstan-doctrine": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
-        "phpunit/phpunit": "^13.3",
+        "phpunit/phpunit": "^13.3.2",
         "symfony/browser-kit": "7.4.*",
         "symfony/css-selector": "7.4.*",
         "symfony/maker-bundle": "^1.67"
