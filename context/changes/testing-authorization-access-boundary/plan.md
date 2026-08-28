@@ -307,13 +307,13 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 3.1 phpunit tests/Controller/OnboardingControllerTest.php passes including the new test
-- [x] 3.2 phpunit tests/Controller/DashboardControllerTest.php passes including the 3 new tests
-- [x] 3.3 phpunit tests/Controller/ProfileControllerTest.php passes including the new test
-- [x] 3.4 phpunit tests/Controller/DiaryControllerTest.php passes including the 4 new tests
-- [x] 3.5 phpunit tests/Controller/HomeControllerTest.php passes including the new test
-- [x] 3.6 Full phpunit suite passes
-- [x] 3.7 php-cs-fixer dry-run reports no changes needed
+- [x] 3.1 phpunit tests/Controller/OnboardingControllerTest.php passes including the new test — 1085030
+- [x] 3.2 phpunit tests/Controller/DashboardControllerTest.php passes including the 3 new tests — 1085030
+- [x] 3.3 phpunit tests/Controller/ProfileControllerTest.php passes including the new test — 1085030
+- [x] 3.4 phpunit tests/Controller/DiaryControllerTest.php passes including the 4 new tests — 1085030
+- [x] 3.5 phpunit tests/Controller/HomeControllerTest.php passes including the new test — 1085030
+- [x] 3.6 Full phpunit suite passes — 1085030
+- [x] 3.7 php-cs-fixer dry-run reports no changes needed — 1085030
 
 #### Manual
 
@@ -323,10 +323,10 @@ None — no schema or data changes.
 
 #### Automated
 
-- [ ] 4.1 phpunit tests/Controller/RegistrationControllerTest.php passes including the new test
-- [ ] 4.2 Full phpunit suite passes
-- [ ] 4.3 phpstan analyse passes
-- [ ] 4.4 php-cs-fixer dry-run reports no changes needed
+- [x] 4.1 phpunit tests/Controller/RegistrationControllerTest.php passes including the new test
+- [x] 4.2 Full phpunit suite passes
+- [x] 4.3 phpstan analyse passes
+- [x] 4.4 php-cs-fixer dry-run reports no changes needed
 
 #### Manual
 

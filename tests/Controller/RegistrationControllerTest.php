@@ -55,6 +55,26 @@ class RegistrationControllerTest extends WebTestCase
         }
     }
 
+    public function testDuplicateEmailErrorDoesNotConfirmAccountExistence(): void
+    {
+        $client = static::createClient();
+        $entityManager = $this->entityManager();
+        $email = sprintf('register-%s@example.test', uniqid());
+        $this->createUser($entityManager, $email);
+
+        try {
+            $this->submitRegistrationForm($client, $email, 'Sekretne1!');
+
+            $this->assertResponseIsUnprocessable();
+
+            $content = (string) $client->getResponse()->getContent();
+            $this->assertStringNotContainsString('Istnieje już konto', $content);
+            $this->assertStringContainsString('Rejestracja nie powiodła się. Sprawdź wprowadzone dane i spróbuj ponownie.', $content);
+        } finally {
+            $this->cleanupUserByEmail($entityManager, $email);
+        }
+    }
+
     public function testPasswordMissingDigitIsRejected(): void
     {
         $client = static::createClient();

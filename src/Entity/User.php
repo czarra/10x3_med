@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'Istnieje już konto z tym adresem e-mail.')]
+#[UniqueEntity(fields: ['email'], message: 'Rejestracja nie powiodła się. Sprawdź wprowadzone dane i spróbuj ponownie.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const ROLE_PATIENT = 'ROLE_PATIENT';
