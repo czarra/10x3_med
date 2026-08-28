@@ -1,7 +1,7 @@
 ---
 change_id: testing-recommendation-algorithm-edge-cases
 title: Recommendation-algorithm edge-case test coverage
-status: implemented
+status: impl_reviewed
 created: 2026-08-28
 updated: 2026-08-28
 archived_at: null

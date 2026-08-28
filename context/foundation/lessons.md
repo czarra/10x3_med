@@ -15,3 +15,10 @@
 - **Problem**: Today `DiaryExportService` only exports dates, range-constrained numerics, and a fixed enum — none can start with `=`, `+`, `-`, or `@`, so there's no CSV/formula-injection risk yet. If a free-text field (e.g. a future "notes" column) is ever added, a value like `=cmd|'/c calc'!A1` could execute as a formula when opened in Excel/Sheets.
 - **Rule**: Before adding a free-text field to any CSV export, escape leading `=`, `+`, `-`, `@` (prefix with a single quote or strip the leading character).
 - **Applies to**: CSV/spreadsheet export services
+
+## Base-dose/hypoglycemia constants lack an independent PRD oracle
+
+- **Context**: `tests/Service/Suggestion/BaseDoseSuggestionServiceTest.php`, `tests/Service/Warning/HypoglycemiaWarningServiceTest.php` — any future test of `BaseDoseSuggestionService` or `HypoglycemiaWarningService`.
+- **Problem**: All numeric assertions are hand-derived from the service's own constants/formula (`SuggestionScaling::FACTOR`, `BAND_HIGH`/`BAND_LOW`, `STEP_CLAMP_*`, `INSULIN_DROP_PER_UNIT_MGDL`, `THRESHOLD_*`) rather than an independently-specified PRD oracle, since the PRD only states qualitative rules for base-dose/hypoglycemia (no FR/AC covers either constant set).
+- **Rule**: Hand-derived assertions from the service's own formula are acceptable here only because the PRD gives no independent numeric spec; flag any new algorithm test the same way until the PRD is updated to pin these constants.
+- **Applies to**: `BaseDoseSuggestionService` and `HypoglycemiaWarningService` tests

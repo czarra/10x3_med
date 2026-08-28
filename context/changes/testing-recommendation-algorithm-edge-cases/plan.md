@@ -90,7 +90,14 @@ hot-spot evidence reflects the verified commit count.
 ## What We're NOT Doing
 
 - Not touching `InsulinWwRatioSuggestionService` or its test file — already
-  fully covered.
+  fully covered. **Addendum (impl-review F1)**: during implementation the
+  user asked to rename Polish variable names to English in
+  `BaseDoseSuggestionService.php` and explicitly extended that to
+  `InsulinWwRatioSuggestionService.php` too (`$nadwyzka`→`$excess`,
+  `$krokRaw`→`$stepRaw`, `$krokClamped`→`$stepClamped`, `$krok`→`$step`) —
+  verified as a pure identifier rename with no behavior/logic change; the
+  "not touching" exclusion otherwise still holds (no test or contract
+  changes to this service).
 - Not writing a test for the `MIN_MAGNITUDE` exclusion branch — it is not
   reachable through the public API under today's constants; documented with
   a source comment instead (per user decision).
