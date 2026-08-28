@@ -317,17 +317,17 @@ None — no schema or data changes.
 
 #### Manual
 
-- [ ] 3.8 Manually visiting each of the 10 protected URLs plus / while logged out redirects to /login
+- [x] 3.8 Manually visiting each of the 10 protected URLs plus / while logged out redirects to /login
 
 ### Phase 4: Registration Email-Enumeration Fix
 
 #### Automated
 
-- [x] 4.1 phpunit tests/Controller/RegistrationControllerTest.php passes including the new test
-- [x] 4.2 Full phpunit suite passes
-- [x] 4.3 phpstan analyse passes
-- [x] 4.4 php-cs-fixer dry-run reports no changes needed
+- [x] 4.1 phpunit tests/Controller/RegistrationControllerTest.php passes including the new test — 836aa3a
+- [x] 4.2 Full phpunit suite passes — 836aa3a
+- [x] 4.3 phpstan analyse passes — 836aa3a
+- [x] 4.4 php-cs-fixer dry-run reports no changes needed — 836aa3a
 
 #### Manual
 
-- [ ] 4.5 Manually registering with a duplicate email no longer shows a message confirming account existence
+- [x] 4.5 Manually registering with a duplicate email no longer shows a message confirming account existence
