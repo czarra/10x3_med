@@ -55,7 +55,7 @@ Hot-spot scope used for likelihood weighting: `src/` (excludes `tests/`,
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
 | 1 | Authorization & access-boundary hardening | Prove no patient can reach another patient's diary data through any CRUD/export action or an unauthenticated route | #1, #5 | integration | done | context/archive/2026-08-28-testing-authorization-access-boundary/ |
-| 2 | Recommendation-algorithm edge-case coverage | Prove ratio/base-dose/hypoglycemia suggestions only fire on qualifying data and follow the PRD's direction rule | #2 | unit | not started | — |
+| 2 | Recommendation-algorithm edge-case coverage | Prove ratio/base-dose/hypoglycemia suggestions only fire on qualifying data and follow the PRD's direction rule | #2 | unit | change opened | context/changes/testing-recommendation-algorithm-edge-cases/ |
 | 3 | Diary-entry time-boundary regression coverage | Prove the 24h edit/delete rule holds exactly at the boundary, not just well inside/outside it | #3 | integration | not started | — |
 | 4 | Export data-integrity & injection safety | Prove export never crosses patients and stays injection-safe as S-07b adds new fields | #4 | integration + unit | not started | — |
 

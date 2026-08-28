@@ -55,21 +55,33 @@ final class BaseDoseSuggestionService
             return BaseDoseSuggestionResult::none();
         }
 
-        $nadwyzkas = array_map(
+        $excesses = array_map(
             static fn (array $day): int => $day['glycemia'] - self::TARGET_GLYCEMIA,
             $run,
         );
-        $avg = array_sum($nadwyzkas) / \count($nadwyzkas);
-        $krokRaw = $avg * SuggestionScaling::FACTOR;
-        $krokRaw = min(max($krokRaw, self::STEP_CLAMP_MIN), self::STEP_CLAMP_MAX);
+        $avg = array_sum($excesses) / \count($excesses);
+        $stepRaw = $avg * SuggestionScaling::FACTOR;
+        // STEP_CLAMP_MIN (-2.0) is unreachable via clinically-valid input: DiaryEntry's
+        // Assert\Range(min: 21) on glycemiaMgDl caps the most negative 3-day average
+        // excess at -99 (all days at the floor), giving stepRaw = -1.98, which never
+        // crosses -2.0 — and round(-1.98) already equals the clamped result, so no test
+        // could distinguish clamped from unclamped behavior without a glycemia value no
+        // patient could submit through the real form. Not covered by a test; re-check if
+        // BAND_LOW/TARGET_GLYCEMIA/FACTOR/STEP_CLAMP_MIN or the entity's Range change.
+        $stepRaw = min(max($stepRaw, self::STEP_CLAMP_MIN), self::STEP_CLAMP_MAX);
 
-        if (abs($krokRaw) <= self::MIN_MAGNITUDE) {
+        // MIN_MAGNITUDE (0.5) is unreachable via the public API under today's constants:
+        // the minimum qualifying per-day excess is 26 mg/dL (BAND_HIGH/LOW = TARGET_GLYCEMIA
+        // +/- 25, strict >/< classification), giving stepRaw = 26 * 0.02 = 0.52, which already
+        // exceeds MIN_MAGNITUDE. Not covered by a test; re-check if BAND_HIGH/BAND_LOW/FACTOR/
+        // MIN_MAGNITUDE change.
+        if (abs($stepRaw) <= self::MIN_MAGNITUDE) {
             return BaseDoseSuggestionResult::none();
         }
 
-        $krok = (int) round($krokRaw);
+        $step = (int) round($stepRaw);
         $currentBaseDose = $profile->getBaseDose();
-        $newBaseDose = $currentBaseDose + $krok;
+        $newBaseDose = $currentBaseDose + $step;
         $newBaseDose = min(max($newBaseDose, 1), 35);
 
         $context = 'high' === $run[0]['direction']

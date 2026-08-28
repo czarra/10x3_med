@@ -64,20 +64,20 @@ final class InsulinWwRatioSuggestionService
         $ratios = array_map(
             static function (array $entry): float {
                 $ww = $entry['pair']['before']->getWw();
-                $nadwyzka = abs($entry['delta']) - self::RATIO_THRESHOLD_MGDL;
+                $excess = abs($entry['delta']) - self::RATIO_THRESHOLD_MGDL;
 
-                return $nadwyzka / $ww;
+                return $excess / $ww;
             },
             $qualifying,
         );
 
         $avg = array_sum($ratios) / \count($ratios);
-        $krokRaw = $avg * SuggestionScaling::FACTOR;
-        $krokClamped = min(max($krokRaw, self::RATIO_MIN_STEP), self::RATIO_MAX_STEP);
-        $krok = round(round($krokClamped / self::RATIO_STEP_ROUNDING) * self::RATIO_STEP_ROUNDING, 2);
+        $stepRaw = $avg * SuggestionScaling::FACTOR;
+        $stepClamped = min(max($stepRaw, self::RATIO_MIN_STEP), self::RATIO_MAX_STEP);
+        $step = round(round($stepClamped / self::RATIO_STEP_ROUNDING) * self::RATIO_STEP_ROUNDING, 2);
 
         $currentRatio = $profile->getInsulinWwRatio();
-        $newRatio = 'rise' === $direction ? $currentRatio + $krok : $currentRatio - $krok;
+        $newRatio = 'rise' === $direction ? $currentRatio + $step : $currentRatio - $step;
         $newRatio = min(max($newRatio, 0.1), 10.0);
 
         $context = 'rise' === $direction
