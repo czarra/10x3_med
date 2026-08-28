@@ -123,6 +123,16 @@ class HypoglycemiaWarningServiceTest extends TestCase
         $this->assertTrue($result->available);
     }
 
+    public function testInsulinAdjustedProjectedGlycemiaExactlyAtThresholdYieldsNone(): void
+    {
+        $entry = $this->createEntry(glycemiaMgDl: 200, activityIntensity: ActivityIntensity::Medium, insulinDose: 2.0);
+
+        $result = $this->service()->evaluate($entry);
+
+        // 200 - 2.0 * 45 = 110, not < 110
+        $this->assertFalse($result->available);
+    }
+
     private function service(): HypoglycemiaWarningService
     {
         return new HypoglycemiaWarningService();

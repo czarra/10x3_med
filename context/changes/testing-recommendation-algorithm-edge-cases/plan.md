@@ -376,25 +376,25 @@ Not applicable — no schema or data changes.
 
 #### Automated
 
-- [x] 1.1 New and existing BaseDoseSuggestionServiceTest tests pass
-- [x] 1.2 Full suite stays green
-- [x] 1.3 Static analysis passes
-- [x] 1.4 Code style is clean
+- [x] 1.1 New and existing BaseDoseSuggestionServiceTest tests pass — c125400
+- [x] 1.2 Full suite stays green — c125400
+- [x] 1.3 Static analysis passes — c125400
+- [x] 1.4 Code style is clean — c125400
 
 #### Manual
 
-- [x] 1.5 MIN_MAGNITUDE and STEP_CLAMP_MIN comments reviewed for accuracy
-- [x] 1.6 Low-direction boundary test annotation reviewed for PRD-honesty
+- [x] 1.5 MIN_MAGNITUDE and STEP_CLAMP_MIN comments reviewed for accuracy — c125400
+- [x] 1.6 Low-direction boundary test annotation reviewed for PRD-honesty — c125400
 
 ### Phase 2: Hypoglycemia Boundary Test & Documentation Sync
 
 #### Automated
 
-- [ ] 2.1 New and existing HypoglycemiaWarningServiceTest tests pass
-- [ ] 2.2 Full suite stays green
-- [ ] 2.3 Static analysis passes
+- [x] 2.1 New and existing HypoglycemiaWarningServiceTest tests pass
+- [x] 2.2 Full suite stays green
+- [x] 2.3 Static analysis passes
 
 #### Manual
 
-- [ ] 2.4 Corrected commit-count figure re-verified against current `git log` output
-- [ ] 2.5 test-plan.md diff confirmed single-cell, no collateral changes
+- [x] 2.4 Corrected commit-count figure re-verified against current `git log` output
+- [x] 2.5 test-plan.md diff confirmed single-cell, no collateral changes
