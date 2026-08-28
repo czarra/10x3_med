@@ -98,6 +98,14 @@ class OnboardingControllerTest extends WebTestCase
         }
     }
 
+    public function testOnboardingRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/onboarding');
+
+        $this->assertResponseRedirects('/login');
+    }
+
     private function entityManager(): EntityManagerInterface
     {
         return static::getContainer()->get(EntityManagerInterface::class);

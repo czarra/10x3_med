@@ -229,6 +229,30 @@ class DashboardControllerTest extends WebTestCase
         }
     }
 
+    public function testDashboardRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/pulpit');
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function testAcceptRatioRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('POST', '/pulpit/przelicznik/akceptuj');
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function testAcceptBaseDoseRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('POST', '/pulpit/dawka-bazowa/akceptuj');
+
+        $this->assertResponseRedirects('/login');
+    }
+
     private function entityManager(): EntityManagerInterface
     {
         return static::getContainer()->get(EntityManagerInterface::class);

@@ -668,6 +668,38 @@ class DiaryControllerTest extends WebTestCase
         $this->assertResponseRedirects('/login');
     }
 
+    public function testNewRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/dziennik/nowy');
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function testEditRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/dziennik/1/edytuj');
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function testDeleteRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('POST', '/dziennik/1/usun');
+
+        $this->assertResponseRedirects('/login');
+    }
+
+    public function testHistoryRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/dziennik/historia');
+
+        $this->assertResponseRedirects('/login');
+    }
+
     public function testExportWithNoEntriesReturnsHeaderOnlyCsv(): void
     {
         $client = static::createClient();

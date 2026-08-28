@@ -44,6 +44,14 @@ class ProfileControllerTest extends WebTestCase
         }
     }
 
+    public function testProfileRequiresAuthenticationForFreshAnonymousClient(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/profil');
+
+        $this->assertResponseRedirects('/login');
+    }
+
     private function entityManager(): EntityManagerInterface
     {
         return static::getContainer()->get(EntityManagerInterface::class);

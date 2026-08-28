@@ -295,25 +295,25 @@ None — no schema or data changes.
 
 #### Automated
 
-- [x] 2.1 phpunit tests/Controller/DiaryControllerTest.php passes including the new test
-- [x] 2.2 Full phpunit suite passes
-- [x] 2.3 php-cs-fixer dry-run reports no changes needed
+- [x] 2.1 phpunit tests/Controller/DiaryControllerTest.php passes including the new test — 1b86682
+- [x] 2.2 Full phpunit suite passes — 1b86682
+- [x] 2.3 php-cs-fixer dry-run reports no changes needed — 1b86682
 
 #### Manual
 
-- [x] 2.4 Breaking the history query's user-scoping makes the new test fail; reverting restores green
+- [x] 2.4 Breaking the history query's user-scoping makes the new test fail; reverting restores green — 1b86682
 
 ### Phase 3: Risk #5 — Unauthenticated-Access Coverage
 
 #### Automated
 
-- [ ] 3.1 phpunit tests/Controller/OnboardingControllerTest.php passes including the new test
-- [ ] 3.2 phpunit tests/Controller/DashboardControllerTest.php passes including the 3 new tests
-- [ ] 3.3 phpunit tests/Controller/ProfileControllerTest.php passes including the new test
-- [ ] 3.4 phpunit tests/Controller/DiaryControllerTest.php passes including the 4 new tests
-- [ ] 3.5 phpunit tests/Controller/HomeControllerTest.php passes including the new test
-- [ ] 3.6 Full phpunit suite passes
-- [ ] 3.7 php-cs-fixer dry-run reports no changes needed
+- [x] 3.1 phpunit tests/Controller/OnboardingControllerTest.php passes including the new test
+- [x] 3.2 phpunit tests/Controller/DashboardControllerTest.php passes including the 3 new tests
+- [x] 3.3 phpunit tests/Controller/ProfileControllerTest.php passes including the new test
+- [x] 3.4 phpunit tests/Controller/DiaryControllerTest.php passes including the 4 new tests
+- [x] 3.5 phpunit tests/Controller/HomeControllerTest.php passes including the new test
+- [x] 3.6 Full phpunit suite passes
+- [x] 3.7 php-cs-fixer dry-run reports no changes needed
 
 #### Manual
 

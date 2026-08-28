@@ -28,6 +28,18 @@ class HomeControllerTest extends WebTestCase
         }
     }
 
+    public function testAnonymousHomeRedirectsThroughProfileToLogin(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+
+        $this->assertResponseRedirects('/profil');
+
+        $client->followRedirect();
+
+        $this->assertResponseRedirects('/login');
+    }
+
     private function entityManager(): EntityManagerInterface
     {
         return static::getContainer()->get(EntityManagerInterface::class);
