@@ -1,10 +1,10 @@
 ---
 change_id: testing-authorization-access-boundary
 title: Authorization & access-boundary hardening — integration tests
-status: impl_reviewed
+status: archived
 created: 2026-08-28
 updated: 2026-08-28
-archived_at: null
+archived_at: 2026-08-28T12:48:24Z
 ---
 
 ## Notes
