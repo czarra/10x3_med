@@ -10,8 +10,11 @@ echo "✅ Docker environment cleaned."
 
 # --- Start Docker Containers ---
 echo "🚀 Starting Docker containers..."
-docker compose up -d --build
-echo "✅ Docker containers are up and running."
+# --wait blocks until every service with a healthcheck (databases, php-e2e) is
+# actually healthy — not just started — so the steps below (and any E2E run
+# right after) don't race a still-warming container.
+docker compose up -d --build --wait
+echo "✅ Docker containers are up and healthy."
 
 # --- Install Composer Dependencies ---
 echo "📦 Installing Composer dependencies..."
