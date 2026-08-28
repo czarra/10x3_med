@@ -317,7 +317,7 @@ None — no schema or data changes.
 
 #### Manual
 
-- [x] 3.8 Manually visiting each of the 10 protected URLs plus / while logged out redirects to /login
+- [x] 3.8 Manually visiting each of the 10 protected URLs plus / while logged out redirects to /login — 5dca242
 
 ### Phase 4: Registration Email-Enumeration Fix
 
@@ -330,4 +330,4 @@ None — no schema or data changes.
 
 #### Manual
 
-- [x] 4.5 Manually registering with a duplicate email no longer shows a message confirming account existence
+- [x] 4.5 Manually registering with a duplicate email no longer shows a message confirming account existence — 5dca242
