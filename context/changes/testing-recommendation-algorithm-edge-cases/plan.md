@@ -390,11 +390,11 @@ Not applicable — no schema or data changes.
 
 #### Automated
 
-- [x] 2.1 New and existing HypoglycemiaWarningServiceTest tests pass
-- [x] 2.2 Full suite stays green
-- [x] 2.3 Static analysis passes
+- [x] 2.1 New and existing HypoglycemiaWarningServiceTest tests pass — e630bdb
+- [x] 2.2 Full suite stays green — e630bdb
+- [x] 2.3 Static analysis passes — e630bdb
 
 #### Manual
 
-- [x] 2.4 Corrected commit-count figure re-verified against current `git log` output
-- [x] 2.5 test-plan.md diff confirmed single-cell, no collateral changes
+- [x] 2.4 Corrected commit-count figure re-verified against current `git log` output — e630bdb
+- [x] 2.5 test-plan.md diff confirmed single-cell, no collateral changes — e630bdb
