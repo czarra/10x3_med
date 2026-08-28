@@ -29,3 +29,13 @@ when@test:
         Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface:
             alias: security.user_password_hasher
             public: true
+
+when@e2e:
+    services:
+        # Browser E2E test-support (seed command + POST /__e2e__/reset endpoint).
+        # Lives under tests/, so it is only autoloaded when dev deps are installed
+        # and only wired here — never present in dev/prod.
+        App\Tests\Support\E2e\:
+            resource: '../tests/Support/E2e/'
+            autowire: true
+            autoconfigure: true

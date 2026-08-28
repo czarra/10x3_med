@@ -1,0 +1,14 @@
+{
+    "name": "dia-guide-e2e",
+    "description": "Playwright browser E2E suite for DiaGuide. Runs in Docker (see docker-compose.yml `playwright` service) against the `php-e2e` app instance.",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test:e2e": "playwright test",
+        "test:e2e:ui": "playwright test --ui-port=0 --ui-host=0.0.0.0",
+        "test:e2e:report": "playwright show-report var/e2e/report"
+    },
+    "devDependencies": {
+        "@playwright/test": "1.62.1"
+    }
+}

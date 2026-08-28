@@ -24,3 +24,9 @@
 /postgres_test_data/
 /.idea/
 ###< local dev infra ###
+
+###> playwright e2e ###
+/node_modules/
+# Playwright artifacts (report, traces, storageState) live under /var/e2e/,
+# already covered by the /var/ rule above.
+###< playwright e2e ###

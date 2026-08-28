@@ -52,3 +52,54 @@ services:
         condition: service_healthy
       database-test:
         condition: service_healthy
+
+  # App instance the browser E2E suite drives. Same image as `php`, but served in
+  # a real APP_ENV=e2e environment (see .env.e2e). Reuses the `database-test`
+  # Postgres — the E2E fixtures only touch `@e2e.test` rows.
+  php-e2e:
+    container_name: php_e2e_med
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    environment:
+      APP_ENV: e2e
+      APP_DEBUG: '0'
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    ports:
+      - '8382:80'
+    volumes:
+      - .:/var/www/med
+    depends_on:
+      database-test:
+        condition: service_healthy
+    # var/ is bind-mounted from the host (uid 1000); Apache runs as www-data.
+    # Create + hand over just the e2e cache/log dirs, then start Apache.
+    command: >
+      sh -c "mkdir -p var/cache/e2e var/log
+      && chown -R www-data:www-data var/cache/e2e var/log
+      && exec apache2-foreground"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -fsS http://localhost/login > /dev/null || exit 1" ]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  # Playwright runner. Stays up (sleep infinity) so E2E is invoked the same way
+  # as PHPUnit:  docker compose exec playwright npx playwright test
+  # In CI, run one-shot:  docker compose run --rm playwright npx playwright test
+  playwright:
+    container_name: playwright_med
+    image: mcr.microsoft.com/playwright:v1.62.1-noble
+    working_dir: /var/www/med
+    ipc: host
+    environment:
+      PLAYWRIGHT_BASE_URL: http://php-e2e
+      CI: ${CI:-}
+    volumes:
+      - .:/var/www/med
+    depends_on:
+      php-e2e:
+        condition: service_healthy
+    command: sleep infinity
