@@ -36,4 +36,11 @@ echo "  -> Running migrations for test environment..."
 docker compose exec php bin/console doctrine:migrations:migrate --env=test --no-interaction
 echo "✅ Test database is ready."
 
+# --- Prepare browser E2E suite ---
+# The e2e environment (php-e2e) shares the database-test Postgres, so the schema
+# is already migrated by the step above. Only the Playwright deps are missing.
+echo "🎭 Preparing Playwright E2E suite..."
+docker compose exec -T playwright npm ci
+echo "✅ Playwright is ready.  Run:  docker compose exec playwright npx playwright test"
+
 echo "🎉 All done! Your development environment is ready to use."

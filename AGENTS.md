@@ -16,6 +16,7 @@ DiaGuide (`dia-guide`) is a Symfony 7.4 web app (PHP 8.2+, Doctrine ORM, Postgre
 - `templates/` — Twig views.
 - `migrations/` — Doctrine migrations (empty so far).
 - `tests/` — PHPUnit, mirrors `src/` (e.g. `tests/Kernel/KernelBootTest.php`).
+- `tests/e2e/` — Playwright browser E2E (`.ts` specs, `e2e-rules.md`); `tests/Support/E2e/` — PHP test-support (seed command + `/__e2e__/reset`), wired only for `APP_ENV=e2e`.
 
 ## Build, Test, and Development Commands
 
@@ -24,6 +25,7 @@ DiaGuide (`dia-guide`) is a Symfony 7.4 web app (PHP 8.2+, Doctrine ORM, Postgre
 - `docker compose exec php vendor/bin/phpunit` (or `bin/phpunit`) — run the test suite.
 - `docker compose exec php vendor/bin/phpstan analyse` — static analysis (level 5, `src/` only, see `phpstan.neon`).
 - `docker compose exec php vendor/bin/php-cs-fixer fix` — apply the `@Symfony` code style ruleset before committing.
+- `docker compose exec playwright npx playwright test` — run the browser E2E suite (single spec: append `tests/e2e/<file>.spec.ts`). First time after checkout: `docker compose exec playwright npm ci`.
 
 ## Coding Style & Naming Conventions
 
@@ -34,3 +36,4 @@ DiaGuide (`dia-guide`) is a Symfony 7.4 web app (PHP 8.2+, Doctrine ORM, Postgre
 - PHPUnit 13, config at `@phpunit.dist.xml`, bootstrap `tests/bootstrap.php`, `KERNEL_CLASS=App\Kernel`.
 - The suite runs with `failOnDeprecation`, `failOnNotice`, and `failOnWarning` — any PHP deprecation/notice fails the build, not just uncaught errors.
 - Tests run against the `database-test` Postgres service (`APP_ENV=test`, port 4307 on the host).
+- Browser E2E (Playwright) runs in the `playwright` container against `php-e2e` (`APP_ENV=e2e`, `.env.e2e`, host port 8382), which **shares** the `database-test` Postgres. The E2E fixtures only ever touch `@e2e.test` rows, so the two suites are safe **as long as they run sequentially, never concurrently** (matters for CI stage ordering).

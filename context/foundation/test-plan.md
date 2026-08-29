@@ -6,7 +6,7 @@
 >
 > Refresh: re-run `/10x-test-plan --refresh` when stale (see §8).
 >
-> Last updated: 2026-08-28
+> Last updated: 2026-08-29
 
 ## 1. Strategy
 
@@ -66,12 +66,12 @@ Hot-spot scope used for likelihood weighting: `src/` (excludes `tests/`,
 | unit + integration | PHPUnit | ^13.3 | `KERNEL_CLASS=App\Kernel`, runs against `database-test` Postgres, `failOnDeprecation/Notice/Warning` |
 | functional/HTTP | Symfony BrowserKit + CssSelector | 7.4.* | Already in `require-dev`; WebTestClient pattern already used in `tests/Controller/*Test.php` |
 | static analysis | PHPStan | ^2.2 | level 5, `src/` only (`phpstan.neon`) |
-| e2e (browser) | none yet | n/a | Playwright not scaffolded (see CLAUDE.md); not needed here — every risk in this rollout is server-side/HTTP-testable via the existing functional-test pattern |
+| e2e (browser) | Playwright (`@playwright/test`) | 1.62.1 | **Scaffolded 2026-08-29, Docker-only.** Runs in the `playwright` container against `php-e2e` (`APP_ENV=e2e`, `.env.e2e`), which **shares the `database-test` Postgres** — so the PHPUnit and E2E suites must run sequentially, never concurrently. Config: `playwright.config.ts`; specs + rules: `tests/e2e/`; PHP fixtures (`app:e2e:seed` / `POST /__e2e__/reset`, scoped to `@e2e.test` rows): `tests/Support/E2e/`, wired only via `when@e2e` blocks. Run: `docker compose exec playwright npx playwright test`. Kept thin on purpose — one reviewed spec per genuinely browser-level risk, not a sweep. Currently covers **risk #5** (`tests/e2e/unauthenticated-access.spec.ts`). |
 
 **Stack grounding tools (current session):**
 - Docs: none available in current session — no Context7/framework-docs MCP exposed; checked: 2026-08-28
 - Search: none available in current session — no Exa/web-search MCP exposed; checked: 2026-08-28
-- Runtime/browser: none — no Playwright MCP exposed; not used; checked: 2026-08-28
+- Runtime/browser: Playwright CLI in the `playwright` Docker container (no Playwright MCP); the `/10x-e2e` browser-driven path uses `docker compose exec playwright npx playwright ...`; checked: 2026-08-29
 - Provider/platform: none — no GitHub/Cloudflare/etc. MCP exposed in this session; not used; checked: 2026-08-28
 
 ## 5. Quality Gates
@@ -80,11 +80,13 @@ Hot-spot scope used for likelihood weighting: `src/` (excludes `tests/`,
 |---|---|---|---|
 | lint + typecheck (phpstan + php-cs-fixer) | local | required | type/style drift |
 | unit + integration (phpunit) | local | required after §3 Phase 1 | logic/authorization regressions |
-| e2e on critical flows | — | not planned | no risk in this rollout needs a browser; revisit only if a client-side-only risk surfaces |
+| e2e (Playwright, browser) | `playwright` container → `php-e2e` | local only (not in CI yet) | firewall/access-control + form-login redirect integration across every patient-only route (risk #5); regression on rendered-UI cross-boundary flows |
 
 CI wiring itself (running phpunit/phpstan on every PR) is tracked separately
 under roadmap item F-02 (`deploy-pipeline-live`, already "ready") — not
-duplicated here.
+duplicated here. When E2E is added to CI it runs as its **own stage after**
+PHPUnit (shared `database-test`): `docker compose up -d php-e2e` →
+`docker compose run --rm playwright npx playwright test`.
 
 ## 6. Cookbook Patterns
 
@@ -110,7 +112,12 @@ duplicated here.
 - TBD — see §3 Phase 3 for the exact-24h pattern.
 
 ### 6.5 Adding an e2e test
-- Not applicable to this rollout — see CLAUDE.md's `/10x-e2e` section once Playwright is scaffolded.
+- Only for a risk that genuinely needs a browser (crosses auth→routing→DB→render, or lives only in the rendered UI). Most rollout risks are cheaper as unit/integration — don't promote.
+- Read `tests/e2e/e2e-rules.md` (the rules lever) and model the spec on `tests/e2e/seed.spec.ts` (the exemplar lever). One spec per risk, provenance header linking it to this file.
+- Auth comes from `storageState` (`tests/e2e/auth.setup.ts`); fixture data from the canonical `@e2e.test` users seeded by `POST /__e2e__/reset` (`global-setup.ts`) — extend `tests/Support/E2e/E2eFixtures.php` if a flow needs more.
+- Locators: `getByRole`/`getByLabel`/`getByText`, Polish names. Wait for state, never `waitForTimeout`. Clean up what the test created.
+- Verify green, then deliberately break the production behaviour the risk targets and confirm the spec goes red before reverting.
+- Run: `docker compose exec playwright npx playwright test [tests/e2e/<file>.spec.ts]`. Never run alongside PHPUnit (shared DB).
 
 ### 6.6 Per-rollout-phase notes
 
@@ -124,6 +131,14 @@ duplicated here.
   (adjacent to risk #5, not one of the original two risks). Full record:
   `context/archive/2026-08-28-testing-authorization-access-boundary/`.
 
+- **Browser E2E scaffolding, 2026-08-29** (outside the numbered rollout —
+  Module 3 Lesson 4 exercise): Playwright stood up Docker-only (see §4) and
+  **risk #5** given a browser-level guard-rail — `tests/e2e/unauthenticated-access.spec.ts`
+  asserts every patient-only route (GET/POST/CSV download) bounces an anonymous
+  request to `/login`, with a logged-in positive control. Complements, does not
+  replace, the Phase 1 integration coverage. Deliberate-break verified against
+  `access_control` + `#[IsGranted]` on `/dziennik/historia`.
+
 ## 7. What We Deliberately Don't Test
 
 - **7-day chart visual zones (hipo/norma/hiper CSS/layout/colors)** — low
@@ -133,9 +148,9 @@ duplicated here.
 
 ## 8. Freshness Ledger
 
-- Strategy (§1–§5) last reviewed: 2026-08-28
-- Stack versions last verified: 2026-08-28
-- AI-native tool references last verified: 2026-08-28
+- Strategy (§1–§5) last reviewed: 2026-08-29
+- Stack versions last verified: 2026-08-29 (Playwright 1.62.1 added to §4)
+- AI-native tool references last verified: 2026-08-29
 
 Refresh (`/10x-test-plan --refresh`) when:
 - a new top-3 risk surfaces from the roadmap or archive,

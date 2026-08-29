@@ -9,3 +9,10 @@ when@test:
     framework:
         validation:
             not_compromised_password: false
+
+when@e2e:
+    framework:
+        validation:
+            # Keep the browser E2E suite hermetic — no call to the
+            # have-i-been-pwned API during registration flows.
+            not_compromised_password: false

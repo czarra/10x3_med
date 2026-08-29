@@ -9,3 +9,13 @@
 
 controllers:
     resource: routing.controllers
+
+# Browser E2E test-support endpoint (POST /__e2e__/reset). The default
+# `routing.controllers` resource only scans src/Controller/, so the controller
+# under tests/ needs its own import — loaded only for APP_ENV=e2e.
+when@e2e:
+    e2e_support_controllers:
+        resource:
+            path: ../tests/Support/E2e/Controller/
+            namespace: App\Tests\Support\E2e\Controller
+        type: attribute

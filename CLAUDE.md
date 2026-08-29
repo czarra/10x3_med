@@ -48,9 +48,14 @@ otherwise get wrong:
   it tears down running containers first.
 - **`phpstan.neon` only analyzes `src/`** at level 5. Type errors in `tests/`
   or `config/` won't surface via `vendor/bin/phpstan analyse`.
-- **The E2E section above assumes Playwright tooling that isn't scaffolded
-  yet** — there's no `package.json` or Playwright config in this repo. Set
-  that up before invoking `/10x-e2e`.
+- **Playwright E2E is scaffolded and Docker-only.** `playwright.config.ts` +
+  `package.json` at the root; specs and rules under `tests/e2e/`; PHP
+  test-support (seed command + `POST /__e2e__/reset`) under `tests/Support/E2e/`,
+  wired only via `when@e2e` blocks in `config/services.yaml` / `config/routes.yaml`.
+  Run it like PHPUnit: `docker compose exec playwright npx playwright test`
+  (see `tests/e2e/e2e-rules.md`). The suite drives the `php-e2e` container
+  (`APP_ENV=e2e`, `.env.e2e`), which shares the `database-test` Postgres — so
+  never run the PHPUnit and E2E suites concurrently.
 
 
   This file provides guidance to AI Agents when working with code in this repository:
