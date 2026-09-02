@@ -500,7 +500,7 @@ Local dev/test DBs are unaffected (same migrations already applied by `run-dev.s
 
 #### Manual
 
-- [ ] 3.5 PR from `feat/deploy-pipeline-live` → `CI` runs and passes
+- [x] 3.5 PR from `feat/deploy-pipeline-live` → `CI` runs and passes — 0e4d65d
 - [ ] 3.6 Scratch branch with a failing test → `CI` red → `Deploy` does not run
 - [ ] 3.7 Merge to `main` → `Deploy` via `workflow_run`; "Using Dockerfile"; 6 migrations in pre-deploy log; `curl https://<domain>/login` 200
 - [ ] 3.8 `gh workflow run deploy.yml` on `main` redeploys with no new commit
