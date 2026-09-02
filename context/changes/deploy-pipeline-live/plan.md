@@ -493,10 +493,10 @@ Local dev/test DBs are unaffected (same migrations already applied by `run-dev.s
 
 #### Automated
 
-- [x] 3.1 `actionlint` clean for `ci.yml` and `deploy.yml`
-- [x] 3.2 Both workflow files parse as YAML
-- [x] 3.3 `grep -i railway .github/workflows/ci.yml` → no matches
-- [x] 3.4 `deploy.yml` has the `workflow_run` trigger and the `conclusion == 'success'` guard
+- [x] 3.1 `actionlint` clean for `ci.yml` and `deploy.yml` — b1c824f
+- [x] 3.2 Both workflow files parse as YAML — b1c824f
+- [x] 3.3 `grep -i railway .github/workflows/ci.yml` → no matches — b1c824f
+- [x] 3.4 `deploy.yml` has the `workflow_run` trigger and the `conclusion == 'success'` guard — b1c824f
 
 #### Manual
 
