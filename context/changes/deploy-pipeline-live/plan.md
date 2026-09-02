@@ -460,30 +460,30 @@ Local dev/test DBs are unaffected (same migrations already applied by `run-dev.s
 
 #### Automated
 
-- [x] 1.1 `docker compose config` succeeds
-- [x] 1.2 `docker compose build php` succeeds with no `composer install` in the log
-- [x] 1.3 `sh -n php/railway-start.sh` passes, `test -x` exits 0, no CRLF
-- [x] 1.4 `docker build --target prod -t diaguide:prod .` succeeds
-- [x] 1.5 `docker run --rm diaguide:prod test -f vendor/autoload_runtime.php` exits 0
-- [x] 1.6 `railway-start.sh` port-rewrite with `PORT=8080` on `diaguide:prod` yields `Listen 8080` + `<VirtualHost *:8080>`
-- [x] 1.7 `docker compose up -d --wait database database-test php` healthy; in-container `composer install` + `vendor/bin/phpunit` green
-- [x] 1.8 `bin/console lint:container` passes in the `php` container
-- [x] 1.9 `grep -R railway-start docker-compose.yml` empty; `git diff --stat docker-compose.yml` shows only the two `target: dev` additions
+- [x] 1.1 `docker compose config` succeeds — 6be0537
+- [x] 1.2 `docker compose build php` succeeds with no `composer install` in the log — 6be0537
+- [x] 1.3 `sh -n php/railway-start.sh` passes, `test -x` exits 0, no CRLF — 6be0537
+- [x] 1.4 `docker build --target prod -t diaguide:prod .` succeeds — 6be0537
+- [x] 1.5 `docker run --rm diaguide:prod test -f vendor/autoload_runtime.php` exits 0 — 6be0537
+- [x] 1.6 `railway-start.sh` port-rewrite with `PORT=8080` on `diaguide:prod` yields `Listen 8080` + `<VirtualHost *:8080>` — 6be0537
+- [x] 1.7 `docker compose up -d --wait database database-test php` healthy; in-container `composer install` + `vendor/bin/phpunit` green — 6be0537
+- [x] 1.8 `bin/console lint:container` passes in the `php` container — 6be0537
+- [x] 1.9 `grep -R railway-start docker-compose.yml` empty; `git diff --stat docker-compose.yml` shows only the two `target: dev` additions — 6be0537
 
 #### Manual
 
-- [ ] 1.10 `./run-dev.sh` completes end to end
-- [ ] 1.11 `http://localhost:8381/login` renders + login as a seeded user works
-- [ ] 1.12 `http://localhost:8382/login` returns 200
-- [ ] 1.13 Simulated prod boot (`railway-start.sh`, `PORT=8080`, real test DB) → `curl localhost:8080/login` 200 + form
+- [x] 1.10 `./run-dev.sh` completes end to end — 6be0537
+- [x] 1.11 `http://localhost:8381/login` renders + login as a seeded user works — 6be0537
+- [x] 1.12 `http://localhost:8382/login` returns 200 — 6be0537
+- [x] 1.13 Simulated prod boot (`railway-start.sh`, `PORT=8080`, real test DB) → `curl localhost:8080/login` 200 + form — 6be0537
 
 ### Phase 2: Railway config (`railway.json`)
 
 #### Automated
 
-- [ ] 2.1 `jq -e . railway.json` succeeds
-- [ ] 2.2 `railway.json` `startCommand` = `/usr/local/bin/railway-start.sh`, `build.dockerfilePath` = `php/Dockerfile`
-- [ ] 2.3 `git diff` for this phase touches `railway.json` only
+- [x] 2.1 `jq -e . railway.json` succeeds
+- [x] 2.2 `railway.json` `startCommand` = `/usr/local/bin/railway-start.sh`, `build.dockerfilePath` = `php/Dockerfile`
+- [x] 2.3 `git diff` for this phase touches `railway.json` only
 
 #### Manual
 

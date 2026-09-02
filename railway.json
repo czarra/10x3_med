@@ -1,0 +1,15 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "php/Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "sh /usr/local/bin/railway-start.sh",
+    "preDeployCommand": "php bin/console doctrine:migrations:migrate --no-interaction",
+    "healthcheckPath": "/login",
+    "healthcheckTimeout": 120,
+    "numReplicas": 1,
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
