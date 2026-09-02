@@ -1,4 +1,4 @@
-FROM php:8.5-apache
+FROM php:8.5-apache AS base
 
 # 1. Instalacja zależności systemowych
 RUN apt-get update \
@@ -29,3 +29,26 @@ EXPOSE 80
 
 # 7. Domyślna komenda startowa
 CMD ["apache2-foreground"]
+
+# --- dev stage --------------------------------------------------------------
+# Co buduje `docker compose` (via `target: dev`). Nic nie dodaje — kod aplikacji
+# i vendor/ przychodzą z bind-mounta `.:/var/www/med`, a `run-dev.sh` sam robi
+# `composer install` w kontenerze. Dziedziczy CMD ["apache2-foreground"] z base.
+FROM base AS dev
+
+# --- prod stage (ostatni — to buduje Railway) ------------------------------
+# Samowystarczalny obraz: kod aplikacji + vendor/ (--no-dev) wypieczone w środku.
+# Bez ENTRYPOINT — logika startu Railway żyje w railway-start.sh, uruchamianym
+# wyłącznie przez `railway.json` startCommand, nie przez CMD obrazu.
+FROM base AS prod
+
+# Warstwa vendor/ cache'owana osobno od kodu aplikacji.
+COPY composer.json composer.lock symfony.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
+
+COPY . .
+RUN composer dump-autoload --no-dev --optimize --no-scripts \
+    && mkdir -p var && chown -R www-data:www-data var
+
+COPY php/railway-start.sh /usr/local/bin/railway-start.sh
+RUN chmod +x /usr/local/bin/railway-start.sh

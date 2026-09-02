@@ -1,0 +1,44 @@
+# Build context for `php/Dockerfile` prod stage (`COPY . .`).
+# Keeps host state, dev-only tooling and every non-prod .env* out of the image.
+# `.env` and `.env.prod` are intentionally NOT excluded (Symfony's runtime needs
+# `.env`; `.env.prod` is a tracked, secret-free prod placeholder). Railway's
+# DATABASE_URL / APP_SECRET variables shadow anything in `.env` at runtime.
+
+# VCS / editors / tooling metadata
+.git
+.github
+.idea
+.vscode
+.claude
+context
+
+# Host-generated state — never belongs in the image
+node_modules
+vendor
+var
+postgres_data
+postgres_test_data
+
+# Local + non-prod env files (keep .env and .env.prod)
+.env.local
+.env.*.local
+.env.dev
+.env.dist
+.env.test
+.env.e2e
+
+# Tests + dev quality gate + browser E2E (never loaded under APP_ENV=prod)
+tests
+playwright.config.ts
+package*.json
+phpunit.dist.xml
+phpstan.neon
+.php-cs-fixer.dist.php
+.phpunit.cache
+.php-cs-fixer.cache
+playwright-report
+test-results
+
+# Local bootstrap script + docs
+run-dev.sh
+*.md
