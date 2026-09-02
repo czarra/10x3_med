@@ -26,7 +26,9 @@ jobs:
         run: docker compose exec -T php composer install
 
       - name: PHPStan
-        run: docker compose exec -T php vendor/bin/phpstan analyse
+        # --memory-limit: the php container's CLI default is 128M and PHPStan's
+        # parallel workers crash under it (PHPStan's own recommended remedy).
+        run: docker compose exec -T php vendor/bin/phpstan analyse --memory-limit=512M
 
       - name: PHP-CS-Fixer (dry run)
         run: docker compose exec -T php vendor/bin/php-cs-fixer fix --dry-run --diff
