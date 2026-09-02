@@ -399,6 +399,12 @@ production --detach` with `RAILWAY_TOKEN` from `secrets` and `RAILWAY_SERVICE` f
 **Implementation Note**: The auto-deploy and red-CI checks need `main` + Railway
 secrets, so they are exercised during/after the runbook, not inside `/10x-implement`.
 
+**Impl deviation** (`0e4d65d`): the `ci.yml` PHPStan step runs
+`vendor/bin/phpstan analyse --memory-limit=512M`, not the bare command shown in the
+Contract above — the `php` container's 128M CLI `memory_limit` crashes PHPStan's
+parallel workers. `AGENTS.md` + `.claude/skills/verify/SKILL.md` updated to match
+(impl-review F1).
+
 ---
 
 ## Manual runbook (owner — not part of `/10x-implement`)

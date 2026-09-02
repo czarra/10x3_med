@@ -23,7 +23,7 @@ DiaGuide (`dia-guide`) is a Symfony 7.4 web app (PHP 8.2+, Doctrine ORM, Postgre
 - `./run-dev.sh` — full local bootstrap: rebuilds Docker containers, runs `composer install`, creates/migrates the dev DB, and resets/migrates the test DB.
 - `docker compose exec php bin/console <command>` — run any Symfony console command inside the app container.
 - `docker compose exec php vendor/bin/phpunit` (or `bin/phpunit`) — run the test suite.
-- `docker compose exec php vendor/bin/phpstan analyse` — static analysis (level 5, `src/` only, see `phpstan.neon`).
+- `docker compose exec php vendor/bin/phpstan analyse --memory-limit=512M` — static analysis (level 5, `src/` only, see `phpstan.neon`). The `--memory-limit` flag is required: the php container's CLI `memory_limit` is 128M and PHPStan's parallel workers crash under it.
 - `docker compose exec php vendor/bin/php-cs-fixer fix` — apply the `@Symfony` code style ruleset before committing.
 - `docker compose exec playwright npx playwright test` — run the browser E2E suite (single spec: append `tests/e2e/<file>.spec.ts`). First time after checkout: `docker compose exec playwright npm ci`.
 

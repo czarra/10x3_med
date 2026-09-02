@@ -15,6 +15,13 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Serialise deploys to the prod service — don't cancel one already running
+    # (a superseded release still finishing is harmless; a cancelled one mid-push
+    # is not).
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     # workflow_dispatch: always (operator's call). workflow_run: only if CI was green.
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     steps:
