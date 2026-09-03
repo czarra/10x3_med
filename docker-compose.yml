@@ -95,6 +95,12 @@ services:
     container_name: playwright_med
     image: mcr.microsoft.com/playwright:v1.62.1-noble
     working_dir: /var/www/med
+    # Same explicit resolvers as php / php-e2e: without them `npm ci` can hang
+    # forever on registry.npmjs.org when the CI runner's embedded Docker DNS
+    # black-holes external lookups.
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     ipc: host
     environment:
       PLAYWRIGHT_BASE_URL: http://php-e2e
