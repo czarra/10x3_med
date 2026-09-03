@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Same docker compose stack as local dev. Reads the tracked root .env for
+      # ${DOCKER_POSTGRES_*} substitution — no CI secrets needed. php-e2e /
+      # playwright are NOT in this list: their vendor/ only exists after the
+      # composer install step below populates the shared bind mount.
+      - name: Start core stack (database, database-test, php)
+        run: docker compose up -d --build --wait database database-test php
+
+      - name: Composer install
+        run: docker compose exec -T php composer install
+
+      - name: PHPStan
+        # --memory-limit: the php container's CLI default is 128M and PHPStan's
+        # parallel workers crash under it (PHPStan's own recommended remedy).
+        run: docker compose exec -T php vendor/bin/phpstan analyse --memory-limit=512M
+
+      - name: PHP-CS-Fixer (dry run)
+        run: docker compose exec -T php vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Prepare test database
+        run: |
+          docker compose exec -T php bin/console doctrine:database:create --env=test --if-not-exists
+          docker compose exec -T php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+      - name: PHPUnit
+        run: docker compose exec -T php vendor/bin/phpunit
+
+      # Browser E2E runs strictly AFTER PHPUnit — both share the database-test
+      # Postgres and must never run concurrently.
+      - name: Start browser E2E stack (php-e2e, playwright)
+        run: docker compose up -d --wait php-e2e playwright
+
+      - name: Playwright — install deps
+        run: docker compose exec -T playwright npm ci
+
+      - name: Playwright — run E2E
+        run: docker compose exec -T playwright npx playwright test
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v --remove-orphans
