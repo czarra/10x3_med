@@ -17,6 +17,13 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # 4. Konfiguracja Apache dla Symfony
 RUN a2enmod rewrite
 
+# mod_php wymaga MPM prefork. Świeże php:8.5-apache bywa z włączonym również
+# mpm_event/mpm_worker (regresja upstreamu po aktualizacji apache2 w Debianie),
+# co wywala starcie: "AH00534: apache2: Configuration error: More than one MPM
+# loaded." — wymuszamy sam prefork.
+RUN a2dismod mpm_event mpm_worker 2>/dev/null || true \
+    && a2enmod mpm_prefork
+
 # Konfiguracja VirtualHost dla środowiska deweloperskiego,
 # kierująca ruch do publicznego katalogu Symfony
 RUN echo '<VirtualHost *:80>\n    ServerName localhost\n    DocumentRoot /var/www/med/public\n    <Directory /var/www/med/public>\n        AllowOverride All\n        Require all granted\n        FallbackResource /index.php\n    </Directory>\n</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
