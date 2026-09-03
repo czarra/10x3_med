@@ -1,4 +1,8 @@
-FROM php:8.5-apache AS base
+# Pin do konkretnego digestu — `php:8.5-apache` to ruchomy tag i jego kolejne
+# wydania psuły build (raz brakiem package-lock w Railpacku, raz podwójnym MPM).
+# Ten digest jest zweryfikowany: mods-enabled ma sam mpm_prefork, a zbudowany
+# z niego obraz prod odpowiada 200 na /login. Podbijaj świadomie, nie automatem.
+FROM php:8.5-apache@sha256:609de4eac65a03f20975441c9c3f313811d785575f0d02413c630753ab5c5532 AS base
 
 # 1. Instalacja zależności systemowych
 RUN apt-get update \
