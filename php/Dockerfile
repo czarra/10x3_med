@@ -21,6 +21,12 @@ RUN docker-php-ext-install intl pdo_pgsql gd zip \
 # missing"). Pin daje przewidywalne zachowanie i wybija stary cache warstwy.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=2.10.3
 
+# Railway buduje jako root w sesji nieinteraktywnej — Composer wyłącza wtedy
+# pluginy "for safety", a vendor/autoload_runtime.php tworzy plugin
+# symfony/runtime (post-autoload-dump). Bez tego pliku bin/console rzuca
+# "Symfony Runtime is missing" przy starcie kontenera.
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # 4. Konfiguracja Apache dla Symfony
 RUN a2enmod rewrite
 
