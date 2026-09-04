@@ -493,7 +493,7 @@ Local dev/test DBs are unaffected (same migrations already applied by `run-dev.s
 
 #### Manual
 
-- [ ] 2.4 First deploy (runbook): "Using Dockerfile", 6 migrations in pre-deploy log, `/login` health check passes
+- [x] 2.4 First deploy (runbook): "Using Dockerfile", 6 migrations in pre-deploy log, `/login` health check passes
 
 ### Phase 3: CI/CD
 
@@ -507,6 +507,6 @@ Local dev/test DBs are unaffected (same migrations already applied by `run-dev.s
 #### Manual
 
 - [x] 3.5 PR from `feat/deploy-pipeline-live` → `CI` runs and passes — 0e4d65d
-- [ ] 3.6 Scratch branch with a failing test → `CI` red → `Deploy` does not run
-- [ ] 3.7 Merge to `main` → `Deploy` via `workflow_run`; "Using Dockerfile"; 6 migrations in pre-deploy log; `curl https://<domain>/login` 200
-- [ ] 3.8 `gh workflow run deploy.yml` on `main` redeploys with no new commit
+- [x] 3.6 Scratch branch with a failing test → `CI` red → `Deploy` does not run
+- [x] 3.7 Merge to `main` → `Deploy` via `workflow_run`; "Using Dockerfile"; 6 migrations in pre-deploy log; `curl https://<domain>/login` 200
+- [x] 3.8 `gh workflow run deploy.yml` on `main` redeploys with no new commit
