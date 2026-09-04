@@ -21,11 +21,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # 4. Konfiguracja Apache dla Symfony
 RUN a2enmod rewrite
 
-# mod_php wymaga MPM prefork. Świeże php:8.5-apache bywa z włączonym również
-# mpm_event/mpm_worker (regresja upstreamu po aktualizacji apache2 w Debianie),
-# co wywala starcie: "AH00534: apache2: Configuration error: More than one MPM
-# loaded." — wymuszamy sam prefork.
-RUN a2dismod mpm_event mpm_worker 2>/dev/null || true \
+# mod_php wymaga MPM prefork. Zdejmij bezwarunkowo każdy wpięty moduł MPM
+# (a2dismod potrafi po cichu nie zadziałać na niekanonicznym symlinku z obrazu
+# bazowego), potem wepnij sam prefork. railway-start.sh powtarza to w runtime,
+# bo builder Railway serwuje warstwę `base` ze starego cache mimo zmian tutaj.
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
     && a2enmod mpm_prefork
 
 # Konfiguracja VirtualHost dla środowiska deweloperskiego,
