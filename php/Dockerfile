@@ -15,8 +15,11 @@ RUN docker-php-ext-install intl pdo_pgsql gd zip \
     && pecl install apcu \
     && docker-php-ext-enable apcu
 
-# 3. Instalacja Composera
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# 3. Instalacja Composera — wersja przypięta: starszy Composer blokuje zdarzenie
+# post-autoload-dump przy --no-scripts, przez co plugin symfony/runtime nie
+# generuje vendor/autoload_runtime.php (bin/console rzuca "Symfony Runtime is
+# missing"). Pin daje przewidywalne zachowanie i wybija stary cache warstwy.
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=2.10.3
 
 # 4. Konfiguracja Apache dla Symfony
 RUN a2enmod rewrite
@@ -58,7 +61,13 @@ COPY composer.json composer.lock symfony.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
 
 COPY . .
-RUN composer dump-autoload --no-dev --optimize --no-scripts \
+# dump-autoload BEZ --no-scripts: plugin symfony/runtime wpina się w
+# post-autoload-dump i dopiero wtedy tworzy vendor/autoload_runtime.php.
+# auto-scripts (cache:clear/assets:install) wiszą na post-install-cmd, nie na
+# tym zdarzeniu, więc przy buildzie się nie odpalają. APP_ENV=prod zabezpiecza
+# każde muśnięcie kernela. test -f wywala build, jeśli pliku dalej nie ma.
+RUN APP_ENV=prod composer dump-autoload --no-dev --optimize --no-interaction \
+    && test -f vendor/autoload_runtime.php \
     && mkdir -p var && chown -R www-data:www-data var
 
 COPY php/railway-start.sh /usr/local/bin/railway-start.sh
