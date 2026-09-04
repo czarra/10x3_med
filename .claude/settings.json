@@ -20,5 +20,19 @@
     "deny": [
       "Bash(rm -rf *)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"tool_input\", {}).get(\"file_path\", \"\"))'); case \"$f\" in *.php) rel=\"${f#$PWD/}\"; docker compose exec -T php vendor/bin/php-cs-fixer fix \"/var/www/med/$rel\" >/dev/null 2>&1 || true;; esac",
+            "statusMessage": "Running php-cs-fixer"
+          }
+        ]
+      }
+    ]
   }
 }
