@@ -3,7 +3,7 @@ project: DiaGuide
 version: 1
 status: draft
 created: 2026-08-22
-updated: 2026-08-27
+updated: 2026-09-04
 prd_version: 1
 main_goal: speed
 top_blocker: time
@@ -43,7 +43,7 @@ Pierwsze (najważniejsze) Kryterium sukcesu w PRD.
 | ID   | Change ID                       | Outcome (user can …)                                              | Prerequisites | PRD refs                | Status   |
 | ---- | -------------------------------- | ------------------------------------------------------------------ | -------------- | ------------------------ | -------- |
 | F-01 | auth-scaffold                    | (foundation) szkielet autoryzacji — bundle security, encja User    | —              | FR-001, FR-002           | done |
-| F-02 | deploy-pipeline-live              | (foundation) działający pipeline wdrożeniowy (Railway + CI)         | —              | frontmatter: hard_deadline | ready  |
+| F-02 | deploy-pipeline-live              | (foundation) działający pipeline wdrożeniowy (Railway + CI)         | —              | frontmatter: hard_deadline | done  |
 | S-01 | patient-onboarding                | Pacjent zakłada konto, loguje się i ustawia parametry początkowe    | F-01            | FR-001, FR-002, FR-003   | done |
 | S-02 | log-diary-entry                   | Pacjent dodaje wpis do dzienniczka (glikemia + opcjonalne pola)     | S-01            | FR-004, FR-005, FR-006, FR-007 | done |
 | S-03 | insulin-ww-ratio-suggestion       | Pacjent dostaje sugestię skorygowanego przelicznika insulina/WW     | S-02            | FR-009, FR-011, US-01    | done |
@@ -133,7 +133,7 @@ odtwarzają.
 - **Risk:** Przy `top_blocker: time` wysłanie produktu bez działającej ścieżki
   wdrożenia unieważnia twardy termin niezależnie od stanu funkcji — sekwencjonuj
   wcześnie i równolegle do pracy nad slice'ami, nie odkładaj na koniec.
-- **Status:** ready
+- **Status:** done
 
 ## Slices
 
@@ -318,3 +318,4 @@ zarchiwizowana.)
 - **S-05: Pacjent może przeglądać listę historycznych wpisów pogrupowaną wg dni (ze stronicowaniem/leniwym ładowaniem) oraz wykres z ostatnich 7 dni z wyróżnionymi strefami (hipoglikemia, norma, hiperglikemia).** — Archived 2026-08-26 → `context/archive/2026-08-26-diary-history-view/`. Lesson: —.
 - **S-06: Pacjent może edytować lub usunąć wpis dodany w ciągu ostatnich 24h od utworzenia; starsze wpisy pozostają zablokowane do edycji.** — Archived 2026-08-27 → `context/archive/2026-08-27-edit-delete-diary-entry/`. Lesson: —.
 - **S-07: Pacjent może wyeksportować do CSV bieżąco przeglądaną stronę historii swoich pomiarów, w celu udostępnienia jej lekarzowi. Pierwszy, zawężony slice FR-012 — nie obejmuje eksportu sugerowanych przeliczników ani formatu PDF; ta reszta zakresu jest śledzona jako S-07b.** — Archived 2026-08-27 → `context/archive/2026-08-27-export-diary-history/`. Lesson: —.
+- **F-02: (foundation) Działający pipeline wdrożeniowy — multi-stage `php/Dockerfile` (`base`/`dev`/`prod`), `railway-start.sh`, `.dockerignore`, `railway.json`, GitHub Actions `ci.yml` + CI-gated `deploy.yml`. Pierwszy live deploy na Railway (Postgres 18) potwierdzony: rejestracja, logowanie i wpisy do dzienniczka działają na domenie produkcyjnej.** — Archived 2026-09-04 → `context/archive/2026-08-29-deploy-pipeline-live/`. Lesson: —.

@@ -1,10 +1,10 @@
 ---
 change_id: deploy-pipeline-live
 title: Working Railway + GitHub Actions deployment pipeline
-status: impl_reviewed
+status: archived
 created: 2026-08-29
-updated: 2026-09-03
-archived_at: null
+updated: 2026-09-04
+archived_at: 2026-09-04
 ---
 
 ## Notes
