@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# Pre-commit quality gate for staged PHP files.
+#
+# Source of truth: .githooks/pre-commit. It is copied into .git/hooks/ by
+# `composer install` / `composer update` (see .githooks/install-hooks.sh).
+# Edit THIS file, never .git/hooks/pre-commit (that copy gets overwritten).
+#
+# git runs this on the host; it drives the `php` container:
+#   1. php-cs-fixer (@Symfony) on every staged *.php — auto-fixes on disk, then
+#      aborts the commit so you review and re-stage. Nothing is `git add`ed here.
+#   2. PHPStan (level 5) on staged src/**.php — aborts on type errors.
+# A stopped `php` container aborts the commit (the checks can't run).
+# Bypass with: git commit --no-verify
+#
+set -eu
+
+CONTAINER_PATH=/var/www/med
+
+# Staged PHP files: Added / Copied / Modified / Renamed.
+staged_php=$(git diff --cached --name-only --diff-filter=ACMR -- '*.php')
+[ -n "$staged_php" ] || exit 0
+
+# The `php` service must be up, otherwise we cannot verify the commit.
+if ! docker compose ps --status running --services 2>/dev/null | grep -qx php; then
+    echo "pre-commit: kontener 'php' nie działa — nie można zweryfikować commita." >&2
+    echo "           uruchom 'docker compose up -d php', albo pomiń bramkę: 'git commit --no-verify'." >&2
+    exit 1
+fi
+
+# Map staged repo paths to container paths (quoted for eval).
+container_php=""
+container_src=""
+for f in $staged_php; do
+    container_php="$container_php \"$CONTAINER_PATH/$f\""
+    case "$f" in
+        src/*) container_src="$container_src \"$CONTAINER_PATH/$f\"" ;;
+    esac
+done
+
+# 1. php-cs-fixer — dry-run gate; on any finding, apply the fix and abort.
+if ! eval "docker compose exec -T php vendor/bin/php-cs-fixer fix --dry-run --quiet -- $container_php" 2>/dev/null; then
+    eval "docker compose exec -T php vendor/bin/php-cs-fixer fix --quiet -- $container_php" >/dev/null 2>&1 || true
+    echo "pre-commit: php-cs-fixer poprawił staged pliki (@Symfony):" >&2
+    printf '%s\n' "$staged_php" | sed 's/^/  - /' >&2
+    echo "           przejrzyj 'git diff', dodaj zmiany ('git add') i commituj ponownie." >&2
+    exit 1
+fi
+
+# 2. PHPStan — staged files under src/ only (phpstan.neon is src/-only).
+if [ -n "$container_src" ]; then
+    if ! eval "docker compose exec -T php vendor/bin/phpstan analyse --memory-limit=512M --no-progress --error-format=raw -- $container_src" >&2; then
+        echo "pre-commit: PHPStan zgłosił błędy (powyżej) — commit przerwany." >&2
+        exit 1
+    fi
+fi
+
+exit 0

@@ -48,6 +48,15 @@ otherwise get wrong:
   it tears down running containers first.
 - **`phpstan.neon` only analyzes `src/`** at level 5. Type errors in `tests/`
   or `config/` won't surface via `vendor/bin/phpstan analyse`.
+- **Agent file edits trigger local quality hooks.** `.claude/settings.json`
+  defines `PostToolUse` hooks (matcher `Write|Edit`): php-cs-fixer auto-formats
+  edited `*.php` files (blocking `exit 2` + a re-read notice when it changes
+  something), and PHPStan type-checks edited `src/**` files (blocking `exit 2`
+  on errors). Both run via `docker compose exec -T php`; when the stack is down
+  they no-op silently. A second layer, `.githooks/pre-commit` (copied into
+  `.git/hooks/` by `composer install`), re-runs both checks on staged files at
+  commit time and *blocks* the commit — including when the `php` container is
+  down. Edit `.githooks/pre-commit`, never the `.git/hooks/` copy.
 - **Playwright E2E is scaffolded and Docker-only.** `playwright.config.ts` +
   `package.json` at the root; specs and rules under `tests/e2e/`; PHP
   test-support (seed command + `POST /__e2e__/reset`) under `tests/Support/E2e/`,
