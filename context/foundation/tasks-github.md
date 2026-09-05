@@ -16,7 +16,7 @@ odwrotnie. Nie jest generowane automatycznie — patrz "Odświeżanie" na końcu
 | Roadmap ID | Change ID                    | Issue                                                  | Etykiety           | Zależy od (issue) | Status (roadmap) | Stan (GitHub) |
 | ---------- | ------------------------------ | -------------------------------------------------------- | -------------------- | -------------------- | ------------------- | ---------------- |
 | F-01       | auth-scaffold                  | [#1](https://github.com/czarra/10x3_med/issues/1)         | foundation            | —                     | done                 | closed            |
-| F-02       | deploy-pipeline-live            | [#2](https://github.com/czarra/10x3_med/issues/2)         | foundation            | —                     | ready                | open              |
+| F-02       | deploy-pipeline-live            | [#2](https://github.com/czarra/10x3_med/issues/2)         | foundation            | —                     | done                 | closed            |
 | S-01       | patient-onboarding              | [#3](https://github.com/czarra/10x3_med/issues/3)         | slice                 | #1                    | done                 | closed            |
 | S-02       | log-diary-entry                  | [#4](https://github.com/czarra/10x3_med/issues/4)         | slice                 | #3                    | done                 | closed            |
 | S-03       | insulin-ww-ratio-suggestion      | [#5](https://github.com/czarra/10x3_med/issues/5)         | slice, north-star     | #4                    | done                 | closed            |
