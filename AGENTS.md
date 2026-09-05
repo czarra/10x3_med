@@ -26,6 +26,7 @@ DiaGuide (`dia-guide`) is a Symfony 7.4 web app (PHP 8.2+, Doctrine ORM, Postgre
 - `docker compose exec php vendor/bin/phpstan analyse --memory-limit=512M` — static analysis (level 5, `src/` only, see `phpstan.neon`). The `--memory-limit` flag is required: the php container's CLI `memory_limit` is 128M and PHPStan's parallel workers crash under it.
 - `docker compose exec php vendor/bin/php-cs-fixer fix` — apply the `@Symfony` code style ruleset before committing.
 - `docker compose exec playwright npx playwright test` — run the browser E2E suite (single spec: append `tests/e2e/<file>.spec.ts`). First time after checkout: `docker compose exec playwright npm ci`.
+- **Pre-commit gate** (`.githooks/pre-commit`): on `git commit` with staged `*.php`, runs php-cs-fixer then PHPStan (staged `src/**` only) inside the `php` container. Aborts the commit on style violations (files are auto-fixed on disk — review, then `git add` again; nothing is staged for you), on type errors, or if the `php` container is down. Installed into `.git/hooks/` automatically by `composer install`; install by hand with `sh .githooks/install-hooks.sh`. Bypass with `git commit --no-verify`.
 
 ## Coding Style & Naming Conventions
 

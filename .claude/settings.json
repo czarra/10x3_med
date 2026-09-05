@@ -28,8 +28,15 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=$(python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"tool_input\", {}).get(\"file_path\", \"\"))'); case \"$f\" in *.php) rel=\"${f#$PWD/}\"; docker compose exec -T php vendor/bin/php-cs-fixer fix \"/var/www/med/$rel\" >/dev/null 2>&1 || true;; esac",
-            "statusMessage": "Running php-cs-fixer"
+            "statusMessage": "Running php-cs-fixer",
+            "timeout": 20000,
+            "command": "docker compose ps --status running --services 2>/dev/null | grep -qx php || exit 0; f=$(python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"tool_input\", {}).get(\"file_path\", \"\"))'); case \"$f\" in \"$PWD\"/*.php) rel=\"${f#\"$PWD\"/}\"; docker compose exec -T php vendor/bin/php-cs-fixer fix --dry-run --quiet \"/var/www/med/$rel\" 2>/dev/null && exit 0; docker compose exec -T php vendor/bin/php-cs-fixer fix \"/var/www/med/$rel\" >/dev/null 2>&1; echo \"php-cs-fixer applied @Symfony fixes to $rel; re-read the file before further edits.\" >&2; exit 2;; esac"
+          },
+          {
+            "type": "command",
+            "statusMessage": "Running PHPStan",
+            "timeout": 60000,
+            "command": "docker compose ps --status running --services 2>/dev/null | grep -qx php || exit 0; f=$(python3 -c 'import json,sys; print(json.load(sys.stdin).get(\"tool_input\", {}).get(\"file_path\", \"\"))'); case \"$f\" in \"$PWD\"/src/*.php) rel=\"${f#\"$PWD\"/}\"; out=$(docker compose exec -T php vendor/bin/phpstan analyse --memory-limit=512M --no-progress --error-format=raw \"/var/www/med/$rel\" 2>&1) || { echo \"$out\" >&2; exit 2; };; esac"
           }
         ]
       }
