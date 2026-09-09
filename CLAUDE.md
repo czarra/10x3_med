@@ -48,6 +48,14 @@ otherwise get wrong:
   it tears down running containers first.
 - **`phpstan.neon` only analyzes `src/`** at level 5. Type errors in `tests/`
   or `config/` won't surface via `vendor/bin/phpstan analyse`.
+- **`[error] Uncaught PHP Exception …` during `phpunit` is expected noise, not a
+  failure** (suite exits `0`). Negative-path tests provoke asserted 4xx responses;
+  with no `monolog-bundle`, Symfony's fallback logger prints them to stderr.
+  `config/services.yaml` (`when@test`) raises the `logger` floor to `critical` to
+  drop it. Don't swap in a file handler — `var/log/` is absent on a fresh CI
+  checkout (`/var/` gitignored) and it throws. Installing `symfony/monolog-bundle`
+  (with a proper `when@test` handler) is the planned long-term fix; until then the
+  `logger` override stands.
 - **Agent file edits trigger local quality hooks.** `.claude/settings.json`
   defines `PostToolUse` hooks (matcher `Write|Edit`): php-cs-fixer auto-formats
   edited `*.php` files (blocking `exit 2` + a re-read notice when it changes

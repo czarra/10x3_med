@@ -30,6 +30,25 @@ when@test:
             alias: security.user_password_hasher
             public: true
 
+        # This project has no monolog-bundle, so Symfony's fallback PSR-3 logger
+        # (Symfony\Component\HttpKernel\Log\Logger) is active. It writes to stderr,
+        # and HttpKernel's ErrorListener logs every uncaught 4xx HttpException at
+        # ERROR level -- which pollutes `phpunit` output with lines from
+        # negative-path controller tests that deliberately provoke (and assert) a
+        # 4xx response. Raising the floor to CRITICAL drops that 4xx noise while
+        # still surfacing what actually matters in a test run: non-HTTP throwables
+        # and any status >= 500 are logged at CRITICAL by ErrorListener. Defining
+        # `logger` here makes HttpKernel's LoggerPass skip its own registration, so
+        # the remaining constructor arguments are restated verbatim.
+        logger:
+            class: Symfony\Component\HttpKernel\Log\Logger
+            arguments:
+                - 'critical'            # $minLevel: only CRITICAL+ reaches stderr during tests
+                - ~                     # $output: default (stderr)
+                - ~                     # $formatter: default
+                - '@request_stack'      # $requestStack
+                - '%kernel.debug%'      # $debug
+
 when@e2e:
     services:
         # Browser E2E test-support (seed command + POST /__e2e__/reset endpoint).
